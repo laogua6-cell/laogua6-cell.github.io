@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>小欣</title>
+    <style>
+        /* 弹窗样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 80%;
+            text-align: center;
+            border: 2px solid #ff6b6b;
+            animation: modalAppear 0.5s ease-out;
+        }
+        
+        @keyframes modalAppear {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .modal-message {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .confirm-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .confirm-btn:active {
+            transform: translateY(1px);
+        }
+        
+        /* 原有样式 */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a1a2e;
+            font-family: 'Microsoft YaHei', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            background-image: url('./xiao.jpg');
+            background-size: 100% 100%;
+        }
+        #container{
+            background-color: #000000; /* 恢复初始背景色，关闭标签时再移除 */
+            height: 100vh;
+            width: 100vw;
+            transition: background-color 0.5s; /* 增加背景色过渡效果 */
+        }
+        
+        .message-window {
+            position: absolute;
+            width: 50px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            font-size: 10px;
+            /* font-weight: bold; */
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: popup 0.5s forwards;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.2s, opacity 0.3s, transform 0.3s; /* 优化过渡效果 */
+            padding: 4px;
+        }
+        
+        .message-window:hover,
+        .message-window:active {
+            transform: scale(1.05);
+            z-index: 100;
+        }
+        
+        @keyframes popup {
+            0% { opacity: 0; transform: scale(0.8); }
+            70% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* 其他样式保持不变 */
+        .instruction {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            z-index: 20;
+            background-color: rgba(0,0,0,0.5);
+            padding: 8px;
+            border-radius: 5px;
+            margin: 0 15px;
+        }
+        
+        .exit-hint {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #fff;
+            z-index: 20;
+        }
+        
+        .progress-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 200px;
+            height: 16px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            z-index: 20;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa36c);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 8px;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 弹窗结构 -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title">这是我想给你说的话</div>
+            <div class="modal-message">这是我真心要说的</div>
+            <button id="confirmBtn" class="confirm-btn">确认</button>
+        </div>
+    </div>
+    
+    <div id="container"></div>
+    <div class="progress-container" style="display: none;">
+        <div class="progress-bar"></div>
+        <div class="progress-text">正在铺满: 0%</div>
+    </div>
+    <div class="instruction" style="display: none;">双击屏幕退出动画</div>
+    <div class="exit-hint"  style="display: none;">双击退出</div>
+
+    <script>
+        // 弹窗控制逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modal');
+            const confirmBtn = document.getElementById('confirmBtn');
+            
+            // 点击确认按钮关闭弹窗并开始动画
+            confirmBtn.addEventListener('click', function() {
+                modal.style.opacity = '0';
+                modal.style.transform = 'scale(0.8)';
+                
+                setTimeout(function() {
+                    modal.style.display = 'none';
+                    // 开始主动画
+                    main();
+                }, 300);
+            });
+        });
+        
+        // 原有动画逻辑
+        const tips = [
+            '多喝水哦~', '好好爱自己', '好好吃饭', '保持好心情', 
+            '我想你了', '顺顺利利', '别熬夜', '天冷了多穿衣服',
+            '加油呀', '开心每一天', '记得微笑', '照顾好自己',
+            '注意休息', '一切都会好', '平安喜乐', '天天开心'
+        ];
+        
+        const colors = [
+            '#ffcccc', '#cce7ff', '#d6eaff', '#fff9cc', '#ffccf5', 
+            '#b3e0ff', '#FFC0CB', '#ADD8E6', '#90EE90', '#FFFACD', 
+            '#FF69B4', '#87CEEB', '#E0FFFF', '#FFE4E1', '#E6E6FA'
+        ];
+       
+        let heartWindows = [];
+        let noteWindows = [];
+        let animationActive = true;
+        let lastTapTime = 0;
+        const container = document.getElementById('container'); // 缓存容器元素
+        
+        // 生成爱心点逻辑保持不变
+        function generateHeartPoints(n, width, height) {
+            const points = [];
+            const baseSize = Math.min(width, height) * 0.35;
+            const centerX = (width / 2) - 42;
+            const centerY = height / 2;
+            
+            for (let i = 0; i < n; i++) {
+                const t = (i / n) * Math.PI * 2;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                
+                const scale = baseSize / 15;
+                const pointX = centerX + x * scale;
+                const pointY = centerY + y * scale;
+                
+                const maxX = width - 90;
+                const constrainedX = Math.max(0, Math.min(pointX, maxX));
+                const constrainedY = Math.max(0, Math.min(pointY, height - 30));
+                
+                points.push([constrainedX, constrainedY]);
+            }
+            return points;
+        }
+        
+        // 创建窗口逻辑保持不变
+        function createWindow(x, y, text = null, isHeart = true) {
+            const windowDiv = document.createElement('div');
+            windowDiv.className = 'message-window';
+            windowDiv.style.left = `${x}px`;
+            windowDiv.style.top = `${y}px`;
+            windowDiv.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            windowDiv.textContent = text || tips[Math.floor(Math.random() * tips.length)];
+            
+            container.appendChild(windowDiv);
+            
+            if (isHeart) {
+                heartWindows.push(windowDiv);
+            } else {
+                noteWindows.push(windowDiv);
+            }
+            
+            return windowDiv;
+        }
+        
+        // 清除爱心窗口逻辑保持不变
+        function clearHeartWindows() {
+            return new Promise(resolve => {
+                let removed = 0;
+                const total = heartWindows.length;
+                
+                if (total === 0) {
+                    resolve();
+                    return;
+                }
+                
+                heartWindows.forEach(window => {
+                    window.style.opacity = '0';
+                    window.style.transform = 'scale(0.5)';
+                    setTimeout(() => {
+                        if (window.parentNode) {
+                            window.parentNode.removeChild(window);
+                        }
+                        removed++;
+                        if (removed === total) {
+                            heartWindows = [];
+                            resolve();
+                        }
+                    }, 300);
+                });
+            });
+        }
+        
+        // 优化：1秒内陆续关闭标签（核心修改）
+        function clearNoteWindows() {
+            return new Promise(resolve => {
+                const total = noteWindows.length;
+                if (total === 0) {
+                    resolve();
+                    return;
+                }
+                
+                let removed = 0;
+                // 每个标签的关闭延迟不同，总时长控制在1秒内
+                noteWindows.forEach((window, index) => {
+                    // 计算延迟时间：0到1000ms均匀分布
+                    const delay = (index / total) * 1000;
+                    
+                    setTimeout(() => {
+                        window.style.opacity = '0';
+                        window.style.transform = 'scale(0.5)';
+                        // 动画完成后移除元素
+                        setTimeout(() => {
+                            if (window.parentNode) {
+                                window.parentNode.removeChild(window);
+                            }
+                            removed++;
+                            if (removed === total) {
+                                noteWindows = [];
+                                resolve(); // 所有标签关闭后 resolve
+                            }
+                        }, 300); // 与过渡动画时长匹配
+                    }, delay);
+                });
+            });
+        }
+        
+        async function createNoteWindowsContinuously() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const noteCount = Math.floor(width / 90) * Math.floor(height / 30) * 5;
+            
+            const progressContainer = document.querySelector('.progress-container');
+            const progressBar = document.querySelector('.progress-bar');
+            const progressText = document.querySelector('.progress-text');
+            progressContainer.style.display = 'none';
+            
+            for (let i = 0; i < noteCount; i++) {
+                if (!animationActive) break;
+                
+                const x = Math.random() * (width -0);
+                const y = Math.random() * (height - 30);
+                createWindow(x, y, null, false);
+                
+                const progress = Math.floor((i / noteCount) * 100);
+                // progressBar.style.width = `${progress}%`;
+                // progressText.textContent = `正在铺满: ${progress}%`;
+                
+                if (i % 15 === 0) {
+                    await new Promise(resolve => setTimeout(resolve, 1));
+                }
+            }
+            
+            progressContainer.style.display = 'none';
+        }
+        
+        async function main() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const heartPoints = generateHeartPoints(150, width, height);
+            
+            // 第一阶段：显示爱心轨迹上的窗口
+            for (let i = 0; i < heartPoints.length; i++) {
+                if (!animationActive) break;
+                
+                const [x, y] = heartPoints[i];
+                const text = i === heartPoints.length - 1 ? "保持好心情" : null;
+                createWindow(x, y, text, true);
+                
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await clearHeartWindows();
+            
+            if (animationActive) {
+                await createNoteWindowsContinuously();
+                // 便签显示一段时间后开始关闭（可调整停留时间）
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                // 关闭所有便签卡片（1秒内陆续关闭）
+                await clearNoteWindows();
+                // 所有标签关闭后，移除背景色（核心修改）
+                container.style.backgroundColor = 'transparent';
+            }
+        }
+        
+        // 双击退出逻辑保持不变
+        document.addEventListener('touchend', function(event) {
+            const currentTime = new Date().getTime();
+            const tapTime = currentTime - lastTapTime;
+            
+            if (tapTime < 300 && tapTime > 0) {
+                event.preventDefault();
+                animationActive = false;
+                
+                // 退出时也用陆续关闭效果
+                const total = heartWindows.length + noteWindows.length;
+                let removed = 0;
+                
+                [...heartWindows, ...noteWindows].forEach((window, index) => {
+                    const delay = (index / total) * 1000;
+                    setTimeout(() => {
+                        window.style.opacity = '0';
+                        window.style.transform = 'scale(0.5)';
+                        setTimeout(() => {
+                            if (window.parentNode) window.parentNode.removeChild(window);
+                            removed++;
+                            if (removed === total) {
+                                heartWindows = [];
+                                noteWindows = [];
+                                container.style.backgroundColor = 'transparent'; // 退出时也移除背景
+                                
+                                const exitMessage = document.createElement('div');
+                                exitMessage.textContent = '已退出';
+                                exitMessage.style.position = 'fixed';
+                                exitMessage.style.top = '50%';
+                                exitMessage.style.left = '50%';
+                                exitMessage.style.transform = 'translate(-50%, -50%)';
+                                exitMessage.style.fontSize = '24px';
+                                exitMessage.style.color = '#fff';
+                                exitMessage.style.zIndex = '100';
+                                exitMessage.style.backgroundColor = 'rgba(0,0,0,0.7)';
+                                exitMessage.style.padding = '15px 30px';
+                                exitMessage.style.borderRadius = '10px';
+                                document.body.appendChild(exitMessage);
+                                
+                                setTimeout(() => {
+                                    if (exitMessage.parentNode) exitMessage.parentNode.removeChild(exitMessage);
+                                }, 2000);
+                            }
+                        }, 300);
+                    }, delay);
+                });
+            }
+            
+            lastTapTime = currentTime;
+        });
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                const event = new Event('touchend');
+                event.preventDefault = () => {};
+                lastTapTime = new Date().getTime() - 200;
+                document.dispatchEvent(event);
+            }
+        });
+        
+        // 注意：移除了原来的 window.addEventListener('load', main);
+        // 现在动画会在点击确认按钮后开始
+    </script>
+</body>
+</html>
