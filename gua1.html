@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双十一抽奖活动</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+        
+        /* 第一页：入口页样式 */
+        .entry-page {
+            text-align: center;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .entry-page h1 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+        }
+        
+        .entry-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .entry-button:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        /* 第二页：转盘抽奖样式 */
+        .wheel-page {
+            display: none;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            transition: opacity 0.5s ease;
+        }
+        
+        .wheel-page h1 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ffeb3b 0deg 45deg,
+                #4caf50 45deg 90deg,
+                #9e9e9e 90deg 135deg,
+                #ff9800 135deg 180deg,
+                #9e9e9e 180deg 225deg,
+                #ff9800 225deg 270deg,
+                #9e9e9e 270deg 315deg,
+                #4caf50 315deg 360deg
+            );
+            position: relative;
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            transform: rotate(-22.5deg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        
+        .wheel-item {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            left: 0;
+            top: 0;
+            text-align: center;
+        }
+        
+        .wheel-text {
+            position: absolute;
+            transform: rotate(22.5deg);
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+            width: 80px;
+            left: 40px;
+            top: 20px;
+            text-shadow: 1px 1px 2px white;
+        }
+        
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 40px;
+            background: #e74c3c;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 10;
+        }
+        
+        .spin-button {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .spin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.6);
+        }
+        
+        .spin-button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e74c3c;
+        }
+        
+        /* 第三页：结果展示样式 */
+        .result-page {
+            display: none;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .image-container {
+            max-width: 100%;
+            max-height: 80vh;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .text-line {
+            font-size: 24px;
+            margin: 10px 0;
+            text-align: center;
+            color: #333;
+            font-family: Arial, sans-serif;
+        }
+        
+        .first-line {
+            font-weight: bold;
+        }
+        
+        .second-line {
+            color: #e74c3c;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        
+        .audio-player {
+            margin-top: 20px;
+            width: 100%;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .audio-player h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        audio {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- 第一页：入口页 -->
+    <div class="entry-page" id="entryPage">
+        <h1>双十一抽奖</h1>
+        <p>点击下方按钮前去抽奖</p>
+        <button class="entry-button" id="entryBtn">前往抽奖</button>
+    </div>
+
+    <!-- 第二页：转盘抽奖 -->
+    <div class="wheel-page" id="wheelPage">
+        <h1>🎯🎯 双十一幸运大转盘 🎯🎯🎯</h1>
+        
+        <div class="wheel-container">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel">
+                <div class="wheel-item" style="transform: rotate(0deg);">
+                    <div class="wheel-text">再来一次</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(45deg);">
+                    <div class="wheel-text">特等奖</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(90deg);">
+                    <div class="wheel-text">谢谢参与</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(135deg);">
+                    <div class="wheel-text">差一点点</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(180deg);">
+                    <div class="wheel-text">谢谢惠顾</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(225deg);">
+                    <div class="wheel-text">差一点</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(270deg);">
+                    <div class="wheel-text">再次惠顾</div>
+                </div>
+                <div class="wheel-item" style="transform: rotate(315deg);">
+                    <div class="wheel-text">再接再厉</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="spin-button" id="spinBtn">立即抽奖</button>
+        
+        <div class="result" id="result">点击按钮开始抽奖！</div>
+    </div>
+
+    <!-- 第三页：结果展示 -->
+    <div class="result-page" id="resultPage">
+        <div class="image-container">
+            
+        </div>
+        
+        <div class="text-line first-line">想什么呢？</div>
+        <div class="text-line second-line">祝你光棍节快乐</div>
+        
+        <div class="audio-player">
+            <h3>背景音乐</h3>
+            <audio controls loop id="bgMusic">
+                <source src="https://music.163.com/song/media/outer/url?id=2750191302.mp3" type="audio/mpeg">
+                您的浏览器不支持音频播放。
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        // 页面元素
+        const entryPage = document.getElementById('entryPage');
+        const wheelPage = document.getElementById('wheelPage');
+        const resultPage = document.getElementById('resultPage');
+        const entryBtn = document.getElementById('entryBtn');
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinBtn');
+        const result = document.getElementById('result');
+        const bgMusic = document.getElementById('bgMusic');
+        
+        // 状态变量
+        let isSpinning = false;
+        let hasSpun = false;
+        
+        // 确保转盘初始位置指向特等奖
+        wheel.style.transform = 'rotate(-22.5deg)';
+        
+        // 入口按钮点击事件
+        entryBtn.addEventListener('click', () => {
+            entryPage.style.display = 'none';
+            wheelPage.style.display = 'block';
+        });
+        
+        // 抽奖按钮点击事件
+        spinBtn.addEventListener('click', () => {
+            if (isSpinning) return;
+            
+            // 如果已经抽过奖，点击"立即领取"按钮
+            if (hasSpun) {
+                // 隐藏转盘页，显示结果页
+                wheelPage.style.display = 'none';
+                resultPage.style.display = 'block';
+                
+                // 在用户交互后播放背景音乐
+                bgMusic.play().catch(e => {
+                    console.log("音频播放失败:", e);
+                });
+                
+                return;
+            }
+            
+            // 抽奖逻辑
+            isSpinning = true;
+            spinBtn.disabled = true;
+            result.textContent = '转盘旋转中...';
+            
+            // 计算旋转角度，确保箭头始终指向特等奖
+            const extraSpins = 5;
+            const targetDegree = 360 * extraSpins - 22.5; // 精确指向特等奖
+            
+            wheel.style.transform = `rotate(${targetDegree}deg)`;
+            
+            setTimeout(() => {
+                isSpinning = false;
+                spinBtn.disabled = false;
+                
+                // 更改按钮文字为"立即领取"
+                spinBtn.textContent = '立即领取';
+                hasSpun = true; // 标记已经抽过奖
+                
+                result.innerHTML = `🎉🎉 恭喜您获得：<span style="color: #e74c3c; font-size: 24px;">特等奖</span>`;
+                result.innerHTML += '<br>🏆🏆 太幸运了！您中了大奖！';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
