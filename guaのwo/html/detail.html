@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>欢迎来到我的兴趣营地</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        #intro {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .intro-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        #nav {
+            display: flex;
+            justify-content: center;
+            background-color: #fff;
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        #nav a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        #nav a:hover {
+            color: #4a6ee0;
+        }
+        
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .cd-section, .singer-section {
+            margin-bottom: 50px;
+        }
+        
+        .cd-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        
+        .cd-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            width: calc(33.33% - 20px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cd-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cd-card.playing {
+            border: 2px solid #4a6ee0;
+            box-shadow: 0 0 10px rgba(74, 110, 224, 0.5);
+        }
+        
+        .cd-card img {
+            width: 100%;
+            border-radius: 5px;
+        }
+        
+        .song-title {
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+        
+        .song-desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .singer-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .singer-section .left, .singer-section .right {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .singer-card {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .singer-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+        
+        .song-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .song-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            padding-left: 10px;
+        }
+        
+        .song-list li:hover {
+            background-color: #f0f4ff;
+        }
+        
+        .song-list li.playing {
+            background-color: #e6eeff;
+            color: #4a6ee0;
+            font-weight: bold;
+        }
+        
+        .bookcard {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .bookcard img {
+            width: 120px;
+            height: 160px;
+            object-fit: cover;
+            margin-right: 20px;
+            border-radius: 5px;
+        }
+        
+        .sport-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        
+        .sport-box {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sport-box img {
+            width: 100%;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .photo-album {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .photo-album img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.3s;
+        }
+        
+        .photo-album img:hover {
+            transform: scale(1.05);
+        }
+        
+        .tip {
+            font-size: 0.9em;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .box {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .box a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .box a:hover, .box a.active {
+            background-color: #e6eeff;
+            color: #4a6ee0;
+        }
+        
+        .box-right {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background-color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        #end {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #eef2ff;
+            margin-top: 50px;
+        }
+        
+        #footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #footer a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        #footer a:hover {
+            color: white;
+        }
+        
+        /* 播放器控件样式 */
+        .audio-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .play-pause-btn {
+            background: #4a6ee0;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .song-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .progress-bar {
+            flex: 2;
+            height: 5px;
+            background-color: #555;
+            border-radius: 5px;
+            margin: 0 15px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #4a6ee0;
+            border-radius: 5px;
+            width: 0%;
+        }
+        
+        .time {
+            font-size: 0.9em;
+            color: #ccc;
+            min-width: 100px;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+        }
+        
+        .volume-slider {
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div id="intro">
+        <div class="intro-content">
+            <h2>🌳 兴趣营地 · Explore My Passions</h2>
+            <p>每个人心中，都有一片属于自己的"兴趣森林"——那里没有标准答案，也不需要完成目标</p>
+            <p>我的这片营地里，藏着声音、光影、故事、色彩，还有热爱</p>
+            <p>你将看到的，是我如何在音乐里舒展情绪，在文字中沉淀思考，在奔跑和快门中感受生活的脉搏</p>
+            <p>欢迎你走进这片营地，也许你会发现，我们热爱的事情，竟然有那么多重叠的部分</p>
+        </div>
+    </div>
+    
+    <!-- 导航 -->
+    <div id="nav">
+        <a href="#music">🎵 音乐</a>
+        <a href="#reading">📚 阅读</a>
+        <a href="#sport">🏃 运动</a>
+        <a href="#photo">📷 摄影</a>
+    </div>
+    
+    <!-- 音乐-->
+    <div id="music">
+        <div class="main-content">
+            <h2>🎵 音乐</h2>
+            <div class="cd-section">
+                <h3>🎧 我的私藏CD</h3>
+                <p class="cd-intro">有些旋律，是某段时光的缩影。它们陪我走过低谷，也见证了闪光。点击歌曲可以播放/暂停</p>
+                <div class="cd-list">
+                    <div class="cd-card" data-song="起风了">
+                        <p class="song-title">《起风了》</p>
+                        <p class="song-desc">"总要勇敢一次，把曾经未说出口的唱出来。"</p>
+                    </div>
+                    <div class="cd-card" data-song="夏天的风">
+                        <p class="song-title">《夏天的风》</p>
+                        <p class="song-desc">"它总让我想起傍晚的校园和回不去的盛夏。"</p>
+                    </div>
+                    <div class="cd-card" data-song="有海的地方">
+                        <p class="song-title">《有海的地方》</p>
+                        <p class="song-desc">"我想去有海的地方，朝着光的方向。"</p>
+                    </div>
+                    <div class="cd-card" data-song="房间">
+                        <p class="song-title">《房间》</p>
+                        <p class="song-desc">"在这温暖的房间，我于是慢慢发觉……"</p>
+                    </div>
+                    <div class="cd-card" data-song="爱的回归线">
+                        <p class="song-title">《爱的回归线》</p>
+                        <p class="song-desc">"分离是为了更好的相遇，我们一定会再见。"</p>
+                    </div>
+                    <div class="cd-card" data-song="你是我前进路上的朋友">
+                        <p class="song-title">《你是我前进路上的朋友》</p>
+                        <p class="song-desc">"可是有人把我当太阳，我就不能停止发光。"</p>
+                    </div>
+                </div>
+            </div>
+            <div class="singer-section">
+                <h3>🎤 我喜欢的歌手</h3>
+                <div class="left">
+                    <h4>汪苏泷</h4>
+                    <div class="singer-card">
+                        <div class="singer-text">
+                            <h5>🎵 我的歌单 TOP 8</h5>
+                            <ul class="song-list">
+                                <li data-song="有点甜">《有点甜》</li>
+                                <li data-song="不分手的恋爱">《不分手的恋爱》</li>
+                                <li data-song="万有引力">《万有引力》</li>
+                                <li data-song="晚安">《晚安》</li>
+                                <li data-song="他只是经过">《他只是经过》</li>
+                                <li data-song="小星星">《小星星》</li>
+                                <li data-song="一笑倾城">《一笑倾城》</li>
+                                <li data-song="银河">《银河》</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <h4>Vicky萱萱</h4>
+                    <div class="singer-card">
+                        <div class="singer-text">
+                            <h5>🎵 我的歌单 TOP 8</h5>
+                            <ul class="song-list">
+                                <li data-song="这场青春值得骄傲">《这场青春值得骄傲》</li>
+                                <li data-song="白桃气泡水">《白桃气泡水！》</li>
+                                <li data-song="日落人海">《日落人海》</li>
+                                <li data-song="越过狂风暴雨奔向你">《越过狂风暴雨奔向你》</li>
+                                <li data-song="最好的我">《最好的我》</li>
+                                <li data-song="愿望清单">《愿望清单》</li>
+                                <li data-song="穿越银河的心愿">《穿越银河的心愿》</li>
+                                <li data-song="海市蜃楼">《海市蜃楼》</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 阅读 -->
+    <div id="reading">
+        <div class="main-content">
+            <h2>📚 阅读</h2>
+            <div class="left">
+                <div class="bookcard">
+                    <div class="card-text">
+                        <h3>📘 《小王子》</h3>
+                        <p>"大人们总是关心数字，而我在寻找一朵花。</p>
+                        <p>在这本看似童话的书里，我读懂了孤独、爱与失去。</p>
+                        <p>小王子让我明白，有些东西用眼睛是看不到的，只有用心才看得见。</p>
+                        <p>每次重读，我都像在和童年的自己和解。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="bookcard">
+                    <div class="card-text">
+                        <h3>📙 《平凡的世界》</h3>
+                        <p>"活着，就要做一个对社会有用的人。"</p>
+                        <p>孙少安和孙少平的挣扎与成长，是那个年代千千万万普通人的缩影。</p>
+                        <p>这本书教会我：人生没有捷径，唯有在泥泞中前行，才能活出自己的光亮。</p>
+                        <p>哪怕平凡，也能活得不卑不亢。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                <div class="bookcard">
+                    <div class="card-text">
+                        <h3>📗 《被讨厌的勇气》</h3>
+                        <p>"真正的自由，是被讨厌也不害怕。"</p>
+                        <p>这本书让我重新审视了"讨好型人格"。</p>
+                        <p>原来，幸福不是来自别人的认可，而是源于自己内心的独立与坦然。</p>
+                        <p>拒绝不属于自己的期待，也是一种成长。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="bookcard">
+                    <div class="card-text">
+                        <h3>📕 《傲慢与偏见》</h3>
+                        <p>"我们总在误会中相识，也在理解中靠近。"</p>
+                        <p>初读只觉得是一段英式爱情，后来才发现，它写尽了人与人之间的误解与傲慢。</p>
+                        <p>而最终的理解与靠近，不是因为完美，而是因为学会了放下偏见。</p>
+                        <p>这种浪漫，是成熟后的真诚。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 运动 -->
+    <div id="sport">
+        <div class="main-content">
+            <h2>🏃 运动</h2>
+            <div class="sport-row">
+                <!-- 跳舞：左侧 -->
+                <div class="sport-box">
+                    <h3>跳舞</h3>
+                    <p>我喜欢用身体表达情绪。</p>
+                    <p>跳舞，是我在舞台上的闪光时刻。</p>
+                    <p class="tip">点击可查看直拍视频</p>
+                </div>
+                <!-- 跑步：中间 -->
+                <div class="sport-box">
+                    <h3>跑步</h3>
+                    <p>跑步教会了我坚持与节奏。</p>
+                    <p>每一张奖状，都是我用汗水赢来的肯定。</p>
+                </div>
+                <!-- 舞龙：右侧 -->
+                <div class="sport-box">
+                    <h3>舞龙</h3>
+                    <p>作为"龙珠"带领长龙飞腾，</p>
+                    <p>是我最热血的集体记忆之一。</p>
+                    <p class="tip">点击可查看直拍视频</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 摄影 -->
+    <div id="photo">
+        <div class="main-content">
+            <h2>📷 摄影</h2>
+            <p class="photo-intro">用镜头定格生活的温度，每一张照片都有属于它的故事</p>
+            <div class="photo-album">
+                <div class="photo-placeholder">照片1</div>
+                <div class="photo-placeholder">照片2</div>
+                <div class="photo-placeholder">照片3</div>
+                <div class="photo-placeholder">照片4</div>
+                <div class="photo-placeholder">照片5</div>
+                <div class="photo-placeholder">照片6</div>
+            </div>
+            <p class="tip">鼠标移入可展开</p>
+        </div>
+    </div>
+    
+    <!-- 音频播放器 -->
+    <div class="audio-player" id="audioPlayer" style="display: none;">
+        <div class="player-controls">
+            <button class="play-pause-btn" id="playPauseBtn">▶</button>
+            <div class="song-info" id="songInfo">选择一首歌曲</div>
+        </div>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="time" id="currentTime">0:00</div>
+        <div class="time" id="duration">0:00</div>
+        <div class="volume-control">
+            <span>🔊</span>
+            <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider">
+        </div>
+    </div>
+    
+    <!-- 左侧悬浮导航 -->
+    <div class="box">
+        <a href="../index.html">封面页</a>
+        <a href="home.html">我的主页</a>
+        <a href="detail.html" class="active">兴趣爱好</a>
+        <a href="message.html">留言树屋</a>
+    </div>
+    
+    <!-- 右下悬浮 -->
+    <div class="box-right">
+        <a href="#intro">↑</a>
+    </div>
+    
+    <!-- 结束语 -->
+    <div id="end">
+        <p>谢谢你陪我走了一圈</p>
+        <p>兴趣是我和世界之间最温柔的连接，也是我与自己独处时最安心的存在</p>
+        <p>如果你在这里看到了自己的影子，或者也有想分享的故事</p>
+        <p>欢迎在留言树屋里给我写一封信。</p>
+    </div>
+
+    <!-- 尾部 -->
+    <div id="footer">
+        <p>
+            <a href="#music">音乐</a> |
+            <a href="#reading">阅读</a> |
+            <a href="#sport">运动</a> |
+            <a href="#photo">摄影</a>
+        </p>
+        <p>
+            电话：110&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;E-mail:2053776006@qq.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;地址：郑州市公安局
+        </p>
+    </div>
+
+    <script>
+        // 音频播放器功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 音频数据 - 这里使用示例音频URL，实际使用时需要替换为真实的音频文件URL
+            const audioData = {
+                "起风了": "http://music.163.com/song/media/outer/url?id=1842728629.mp3",
+                "夏天的风": "https://example.com/audio/夏天的风.mp3",
+                "有海的地方": "https://example.com/audio/有海的地方.mp3",
+                "房间": "https://example.com/audio/房间.mp3",
+                "爱的回归线": "https://example.com/audio/爱的回归线.mp3",
+                "你是我前进路上的朋友": "https://example.com/audio/你是我前进路上的朋友.mp3",
+                "有点甜": "https://example.com/audio/有点甜.mp3",
+                "不分手的恋爱": "https://example.com/audio/不分手的恋爱.mp3",
+                "万有引力": "https://example.com/audio/万有引力.mp3",
+                "晚安": "https://example.com/audio/晚安.mp3",
+                "他只是经过": "https://example.com/audio/他只是经过.mp3",
+                "小星星": "https://example.com/audio/小星星.mp3",
+                "一笑倾城": "https://example.com/audio/一笑倾城.mp3",
+                "银河": "https://example.com/audio/银河.mp3",
+                "这场青春值得骄傲": "https://example.com/audio/这场青春值得骄傲.mp3",
+                "白桃气泡水": "https://example.com/audio/白桃气泡水.mp3",
+                "日落人海": "https://example.com/audio/日落人海.mp3",
+                "越过狂风暴雨奔向你": "https://example.com/audio/越过狂风暴雨奔向你.mp3",
+                "最好的我": "https://example.com/audio/最好的我.mp3",
+                "愿望清单": "https://example.com/audio/愿望清单.mp3",
+                "穿越银河的心愿": "https://example.com/audio/穿越银河的心愿.mp3",
+                "海市蜃楼": "https://example.com/audio/海市蜃楼.mp3"
+            };
+            
+            // 获取DOM元素
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            const songInfo = document.getElementById('songInfo');
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
+            const volumeSlider = document.getElementById('volumeSlider');
+            
+            // 创建音频元素
+            const audio = new Audio();
+            audio.volume = 0.5; // 默认音量
+            
+            let currentSong = null;
+            let isPlaying = false;
+            let updateInterval;
+            
+            // 格式化时间
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+            
+            // 更新播放器显示
+            function updatePlayer(songName) {
+                songInfo.textContent = `正在播放: ${songName}`;
+                audioPlayer.style.display = 'flex';
+            }
+            
+            // 播放歌曲
+            function playSong(songName) {
+                // 如果点击的是当前正在播放的歌曲，则暂停/播放
+                if (currentSong === songName) {
+                    if (isPlaying) {
+                        pauseSong();
+                    } else {
+                        resumeSong();
+                    }
+                    return;
+                }
+                
+                // 停止当前歌曲
+                if (currentSong) {
+                    audio.pause();
+                    clearInterval(updateInterval);
+                    removePlayingClass(currentSong);
+                }
+                
+                // 设置新歌曲
+                currentSong = songName;
+                audio.src = audioData[songName];
+                
+                // 播放
+                audio.play().then(() => {
+                    isPlaying = true;
+                    playPauseBtn.textContent = '⏸';
+                    updatePlayer(songName);
+                    addPlayingClass(songName);
+                    
+                    // 更新进度条
+                    updateInterval = setInterval(updateProgress, 500);
+                    
+                    // 更新总时长
+                    audio.addEventListener('loadedmetadata', () => {
+                        duration.textContent = formatTime(audio.duration);
+                    });
+                }).catch(error => {
+                    console.error('播放失败:', error);
+                    alert('音频加载失败，请检查网络连接或音频文件路径');
+                });
+            }
+            
+            // 暂停歌曲
+            function pauseSong() {
+                audio.pause();
+                isPlaying = false;
+                playPauseBtn.textContent = '▶';
+                clearInterval(updateInterval);
+            }
+            
+            // 继续播放
+            function resumeSong() {
+                audio.play();
+                isPlaying = true;
+                playPauseBtn.textContent = '⏸';
+                updateInterval = setInterval(updateProgress, 500);
+            }
+            
+            // 更新进度条
+            function updateProgress() {
+                if (audio.duration) {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progress.style.width = percent + '%';
+                    currentTime.textContent = formatTime(audio.currentTime);
+                }
+            }
+            
+            // 添加播放状态类
+            function addPlayingClass(songName) {
+                // 查找所有包含此歌曲的元素
+                const elements = document.querySelectorAll(`[data-song="${songName}"]`);
+                elements.forEach(el => {
+                    el.classList.add('playing');
+                });
+            }
+            
+            // 移除播放状态类
+            function removePlayingClass(songName) {
+                const elements = document.querySelectorAll(`[data-song="${songName}"]`);
+                elements.forEach(el => {
+                    el.classList.remove('playing');
+                });
+            }
+            
+            // 点击进度条跳转
+            progressBar.addEventListener('click', (e) => {
+                if (!audio.duration) return;
+                
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                audio.currentTime = percent * audio.duration;
+                updateProgress();
+            });
+            
+            // 播放/暂停按钮事件
+            playPauseBtn.addEventListener('click', () => {
+                if (!currentSong) return;
+                
+                if (isPlaying) {
+                    pauseSong();
+                } else {
+                    resumeSong();
+                }
+            });
+            
+            // 音量控制
+            volumeSlider.addEventListener('input', () => {
+                audio.volume = volumeSlider.value / 100;
+            });
+            
+            // 歌曲点击事件
+            document.querySelectorAll('.cd-card, .song-list li').forEach(element => {
+                element.addEventListener('click', () => {
+                    const songName = element.getAttribute('data-song');
+                    if (songName) {
+                        playSong(songName);
+                    }
+                });
+            });
+            
+            // 音频结束事件
+            audio.addEventListener('ended', () => {
+                isPlaying = false;
+                playPauseBtn.textContent = '▶';
+                clearInterval(updateInterval);
+                if (currentSong) {
+                    removePlayingClass(currentSong);
+                }
+            });
+            
+            // 添加占位图片样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .photo-placeholder {
+                    width: 100%;
+                    height: 150px;
+                    background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+                    border-radius: 5px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #999;
+                    font-weight: bold;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
