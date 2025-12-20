@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老瓜的小站 - 个人小站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6d8bc4;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 顶部导航区域 - 屏幕高度的1/8 */
+        .header {
+            height: 12.5vh; /* 1/8屏幕高度 */
+            min-height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+        
+        /* 头像区域 - 左侧 */
+        .avatar-container {
+            margin-right: 20px;
+        }
+        
+        .avatar-link {
+            display: block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            filter: blur(1.5px);
+            transition: var(--transition);
+        }
+        
+        .avatar-link:hover {
+            filter: blur(0.5px);
+            transform: scale(1.05);
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* 切换文字区域 */
+        .changing-text-container {
+            flex: 0 0 auto;
+            margin-right: 20px;
+            width: 220px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .changing-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .changing-text.fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        
+        .changing-text.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 搜索区域 - 中间 */
+        .search-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            filter: blur(1px);
+            transition: var(--transition);
+        }
+        
+        .search-box:hover, .search-box:focus-within {
+            filter: blur(0.5px);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+        
+        .search-icon {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-right: 12px;
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            color: #333;
+            outline: none;
+        }
+        
+        .search-input::placeholder {
+            color: #888;
+        }
+        
+        /* 站点标题 - 右侧 */
+        .site-title {
+            margin-left: 20px;
+            color: white;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            padding: 30px 10%; /* 边缘离屏幕边缘1/10距离 */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 内容板块通用样式 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .expand-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .expand-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .expand-btn i {
+            margin-right: 6px;
+            transition: transform 0.3s ease;
+        }
+        
+        .expand-btn.expanded i {
+            transform: rotate(180deg);
+        }
+        
+        .content-box {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+        
+        .content-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* 可折叠内容区域 */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .collapsible-content.expanded {
+            max-height: 2000px; /* 足够大的值以确保内容完全展开 */
+        }
+        
+        /* 文件储存板块 */
+        .file-storage {
+            border-top: 5px solid #4a6fa5;
+        }
+        
+        /* 瀑布流布局 */
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            transition: var(--transition);
+            break-inside: avoid; /* 防止瀑布流布局中断 */
+        }
+        
+        .file-item:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(74, 111, 165, 0.1);
+            border-radius: 6px;
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .file-info h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .file-info p {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        /* 备忘录板块 */
+        .memo-container {
+            border-top: 5px solid #5cb85c;
+        }
+        
+        /* 瀑布流布局 */
+        .memo-list {
+            column-count: 3;
+            column-gap: 20px;
+        }
+        
+        .memo-item {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--light-bg);
+            border-left: 4px solid #5cb85c;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+            break-inside: avoid; /* 防止瀑布流布局中断 */
+        }
+        
+        .memo-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .memo-title {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .memo-date {
+            font-size: 13px;
+            color: #888;
+        }
+        
+        .memo-content {
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        /* 图片展示板块 */
+        .image-gallery {
+            border-top: 5px solid #d9534f;
+        }
+        
+        /* 瀑布流布局 */
+        .gallery-grid {
+            column-count: 4;
+            column-gap: 20px;
+        }
+        
+        .image-item {
+            display: inline-block;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+            break-inside: avoid; /* 防止瀑布流布局中断 */
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .image-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 8px 10px;
+            font-size: 14px;
+            transform: translateY(100%);
+            transition: var(--transition);
+        }
+        
+        .image-item:hover .image-caption {
+            transform: translateY(0);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .memo-list {
+                column-count: 2;
+            }
+            
+            .gallery-grid {
+                column-count: 3;
+            }
+            
+            .changing-text-container {
+                width: 180px;
+            }
+            
+            .changing-text {
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .main-content {
+                padding: 25px 5%;
+            }
+            
+            .site-title {
+                font-size: 20px;
+            }
+            
+            .search-box {
+                max-width: 400px;
+            }
+            
+            .memo-list {
+                column-count: 2;
+            }
+            
+            .gallery-grid {
+                column-count: 2;
+            }
+            
+            .changing-text-container {
+                width: 150px;
+                margin-right: 15px;
+            }
+            
+            .changing-text {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 3%;
+                height: 10vh;
+                min-height: 70px;
+            }
+            
+            .site-title {
+                display: none;
+            }
+            
+            .avatar-link {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .changing-text-container {
+                width: 120px;
+                height: 50px;
+                margin-right: 10px;
+            }
+            
+            .changing-text {
+                font-size: 13px;
+            }
+            
+            .search-box {
+                height: 40px;
+            }
+            
+            .main-content {
+                padding: 20px 5%;
+            }
+            
+            .memo-list {
+                column-count: 1;
+            }
+            
+            .gallery-grid {
+                column-count: 2;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .content-box {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header {
+                flex-wrap: wrap;
+                height: auto;
+                min-height: auto;
+                padding: 10px 3%;
+            }
+            
+            .avatar-container {
+                margin-right: 10px;
+            }
+            
+            .changing-text-container {
+                order: 3;
+                flex: 1 0 100%;
+                width: 100%;
+                height: auto;
+                margin: 10px 0;
+                text-align: center;
+            }
+            
+            .changing-text {
+                font-size: 15px;
+                width: 100%;
+            }
+            
+            .search-container {
+                order: 4;
+                flex: 1 0 100%;
+                margin-top: 10px;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .file-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .memo-list {
+                column-count: 1;
+            }
+            
+            .gallery-grid {
+                column-count: 1;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .expand-btn {
+                margin-top: 10px;
+                align-self: flex-end;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .changing-text {
+                font-size: 13px;
+            }
+        }
+        
+        /* 底部样式 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 14px;
+        }
+        
+        /* 状态提示 */
+        .status-message {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-style: italic;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="avatar-container">
+            <a href="#" class="avatar-link" title="头像">
+                <img src="https://p3-sign.douyinpic.com/tos-cn-i-0813/oMFkkAen8AkiAllAEl4MH9kCDshfQAmAA8OgID~tplv-dy-lqen-new:1920:1920:q80.webp?lk3s=138a59ce&x-expires=1768816800&x-signature=6vdsc8Qq4OaNHZXW0azCNMzpRjE%3D&from=327834062&s=PackSourceEnum_DOUYIN_REFLOW&se=false&sc=image&biz_tag=aweme_images&l=20251220184525BF76CFCC6BEAFEB88791" alt="用户头像" class="avatar-img">
+            </a>
+        </div>
+        
+        <!-- 切换文字区域 -->
+        <div class="changing-text-container">
+            <div class="changing-text" id="changing-text">年轻的时候没钱 努力几年 终于不年轻了</div>
+        </div>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="搜索文件、备忘录或图片...">
+            </div>
+        </div>
+        
+        <div class="site-title">老瓜的小站</div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 文件储存板块 -->
+        <section class="content-box file-storage">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-folder-open"></i> 文件储存
+                </h2>
+                <button class="expand-btn" data-target="file-content">
+                    <i class="fas fa-chevron-down"></i> 展开
+                </button>
+            </div>
+            
+            <div id="file-content" class="collapsible-content">
+                <div class="file-list">
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>项目报告.pdf</h4>
+                            <a href="https://www.example.com">跳转到外部网站</a>
+                            <p>更新于 2023-10-15 | 大小: 2.4 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-word"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>会议记录.docx</h4>
+                            <p>更新于 2023-10-12 | 大小: 1.8 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-excel"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>数据统计.xlsx</h4>
+                            <p>更新于 2023-10-10 | 大小: 3.2 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-image"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>设计稿.psd</h4>
+                            <p>更新于 2023-10-08 | 大小: 15.7 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-video"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>演示视频.mp4</h4>
+                            <p>更新于 2023-10-05 | 大小: 45.2 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-archive"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>项目备份.zip</h4>
+                            <p>更新于 2023-10-01 | 大小: 102.3 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>网站源码.rar</h4>
+                            <p>更新于 2023-09-28 | 大小: 8.5 MB</p>
+                        </div>
+                    </div>
+                    <div class="file-item fade-in">
+                        <div class="file-icon">
+                            <i class="fas fa-file-audio"></i>
+                        </div>
+                        <div class="file-info">
+                            <h4>会议录音.mp3</h4>
+                            <p>更新于 2023-09-25 | 大小: 12.1 MB</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="status-message">
+                    共 8 个文件，总计 190.2 MB
+                </div>
+            </div>
+        </section>
+
+        <!-- 备忘录板块 -->
+        <section class="content-box memo-container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-sticky-note"></i> 备忘录
+                </h2>
+                <button class="expand-btn" data-target="memo-content">
+                    <i class="fas fa-chevron-down"></i> 展开
+                </button>
+            </div>
+            
+            <div id="memo-content" class="collapsible-content">
+                <div class="memo-list">
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">项目会议要点</div>
+                            <div class="memo-date">2023-10-16</div>
+                        </div>
+                        <div class="memo-content">
+                            1. 确定项目时间线，下周五前完成第一阶段<br>
+                            2. 分配团队成员任务，明确责任分工<br>
+                            3. 准备下周的演示文稿，包括数据分析和图表<br>
+                            4. 联系供应商获取报价，比较三家以上
+                        </div>
+                    </div>
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">学习计划</div>
+                            <div class="memo-date">2023-10-14</div>
+                        </div>
+                        <div class="memo-content">
+                            - 完成React高级教程学习，重点掌握Hooks<br>
+                            - 练习算法题目（每日3题），巩固数据结构知识<br>
+                            - 阅读《设计模式》第三章，理解工厂模式和应用场景<br>
+                            - 准备前端面试常见问题，整理个人项目经验
+                        </div>
+                    </div>
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">购物清单</div>
+                            <div class="memo-date">2023-10-12</div>
+                        </div>
+                        <div class="memo-content">
+                            ✓ 牛奶（已购买）<br>
+                            ✓ 鸡蛋（已购买）<br>
+                            □ 面包（全麦优先）<br>
+                            □ 咖啡豆（深度烘焙）<br>
+                            □ 水果（苹果、香蕉、橙子）<br>
+                            □ 蔬菜（西兰花、胡萝卜）
+                        </div>
+                    </div>
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">旅行计划</div>
+                            <div class="memo-date">2023-10-10</div>
+                        </div>
+                        <div class="memo-content">
+                            目的地：云南大理<br>
+                            时间：11月15日-11月22日<br>
+                            预算：5000元<br>
+                            行程安排：古城游览、洱海骑行、苍山徒步
+                        </div>
+                    </div>
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">读书笔记</div>
+                            <div class="memo-date">2023-10-08</div>
+                        </div>
+                        <div class="memo-content">
+                            《人类简史》第三章要点：<br>
+                            1. 农业革命是人类历史上最重要的转折点之一<br>
+                            2. 农业使人类定居下来，但也带来了疾病和社会不平等<br>
+                            3. 人类驯化了植物和动物，同时也被农业所束缚
+                        </div>
+                    </div>
+                    <div class="memo-item fade-in">
+                        <div class="memo-header">
+                            <div class="memo-title">健身计划</div>
+                            <div class="memo-date">2023-10-05</div>
+                        </div>
+                        <div class="memo-content">
+                            周一：胸部训练 + 有氧运动<br>
+                            周二：背部训练 + 核心训练<br>
+                            周三：休息日<br>
+                            周四：腿部训练 + 有氧运动<br>
+                            周五：肩部训练 + 手臂训练<br>
+                            周末：户外活动或休息
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="status-message">
+                    共 6 条备忘录
+                </div>
+            </div>
+        </section>
+
+        <!-- 图片展示板块 -->
+        <section class="content-box image-gallery">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-images"></i> 图片展示
+                </h2>
+                <button class="expand-btn" data-target="gallery-content">
+                    <i class="fas fa-chevron-down"></i> 展开
+                </button>
+            </div>
+            
+            <div id="gallery-content" class="collapsible-content">
+                <div class="gallery-grid">
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="自然风景">
+                        <div class="image-caption">自然风景</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="城市建筑">
+                        <div class="image-caption">城市建筑</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="科技产品">
+                        <div class="image-caption">科技产品</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="美食摄影">
+                        <div class="image-caption">美食摄影</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="星空夜景">
+                        <div class="image-caption">星空夜景</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="艺术设计">
+                        <div class="image-caption">艺术设计</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="山脉风景">
+                        <div class="image-caption">山脉风景</div>
+                    </div>
+                    <div class="image-item fade-in">
+                        <img src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="海滩日落">
+                        <div class="image-caption">海滩日落</div>
+                    </div>
+                </div>
+                
+                <div class="status-message">
+                    共 8 张图片
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2023 老瓜的小站 | 储存分类管理系统 | 最后更新: 2023年10月</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 文字切换功能
+            const textElement = document.getElementById('changing-text');
+            const texts = [
+                "年轻的时候没钱 努力几年 终于不年轻了",
+                "苦尽甘来 特喵的是泔水的泔吧"
+                "好想哭  转头去捂被子发现被子好臭"
+                "还以为是走入了幸福的圈套，原来是上吊"
+                "根本不知道自己做错了什么，只是一味接受老天的惩罚"
+            ];
+            let currentIndex = 0;
+            
+            // 文字切换函数
+            function changeText() {
+                // 先添加淡出效果
+                textElement.classList.add('fade-out');
+                
+                // 等待淡出动画完成后切换文字
+                setTimeout(() => {
+                    // 更新文字
+                    currentIndex = (currentIndex + 1) % texts.length;
+                    textElement.textContent = texts[currentIndex];
+                    
+                    // 移除淡出效果，添加淡入效果
+                    textElement.classList.remove('fade-out');
+                    textElement.classList.add('fade-in');
+                    
+                    // 淡入动画完成后移除淡入效果
+                    setTimeout(() => {
+                        textElement.classList.remove('fade-in');
+                    }, 800);
+                }, 800);
+            }
+            
+            // 初始加载后3秒开始切换，之后每3秒切换一次
+            setTimeout(() => {
+                changeText();
+                setInterval(changeText, 6000); // 每次切换需要1.6秒动画时间，所以间隔设为6秒
+            }, 3000);
+            
+            // 获取所有展开按钮
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            
+            // 为每个按钮添加点击事件
+            expandButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const content = document.getElementById(targetId);
+                    
+                    // 切换内容区域的展开/收起状态
+                    content.classList.toggle('expanded');
+                    
+                    // 更新按钮文本和图标
+                    if (content.classList.contains('expanded')) {
+                        this.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+                        this.classList.add('expanded');
+                        
+                        // 为内容项添加动画类
+                        setTimeout(() => {
+                            const items = content.querySelectorAll('.fade-in');
+                            items.forEach((item, index) => {
+                                item.style.animationDelay = `${index * 0.05}s`;
+                            });
+                        }, 10);
+                    } else {
+                        this.innerHTML = '<i class="fas fa-chevron-down"></i> 展开';
+                        this.classList.remove('expanded');
+                    }
+                });
+            });
+            
+            // 默认全部收起
+            document.querySelectorAll('.collapsible-content').forEach(content => {
+                content.classList.remove('expanded');
+            });
+            
+            // 为文件项添加点击效果
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const fileName = this.querySelector('h4').textContent;
+                    alert(`您点击了文件: ${fileName}`);
+                });
+            });
+
+            // 为备忘录项添加点击效果
+            document.querySelectorAll('.memo-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const memoTitle = this.querySelector('.memo-title').textContent;
+                    alert(`打开备忘录: ${memoTitle}`);
+                });
+            });
+
+            // 为搜索框添加功能
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    const searchTerm = this.value.trim();
+                    if (searchTerm) {
+                        alert(`搜索: ${searchTerm}`);
+                        this.value = '';
+                        
+                        // 展开所有内容以便查看搜索结果
+                        expandButtons.forEach(button => {
+                            const targetId = button.getAttribute('data-target');
+                            const content = document.getElementById(targetId);
+                            
+                            if (!content.classList.contains('expanded')) {
+                                content.classList.add('expanded');
+                                button.innerHTML = '<i class="fas fa-chevron-up"></i> 收起';
+                                button.classList.add('expanded');
+                            }
+                        });
+                    }
+                }
+            });
+
+            // 为头像添加点击事件
+            document.querySelector('.avatar-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('点击了头像，可以链接到个人资料页面');
+            });
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(event) {
+                // Alt+1 展开/收起文件储存
+                if (event.altKey && event.key === '1') {
+                    document.querySelector('[data-target="file-content"]').click();
+                }
+                // Alt+2 展开/收起备忘录
+                if (event.altKey && event.key === '2') {
+                    document.querySelector('[data-target="memo-content"]').click();
+                }
+                // Alt+3 展开/收起图片展示
+                if (event.altKey && event.key === '3') {
+                    document.querySelector('[data-target="gallery-content"]').click();
+                }
+                // Alt+A 展开所有
+                if (event.altKey && event.key === 'a') {
+                    expandButtons.forEach(button => {
+                        const targetId = button.getAttribute('data-target');
+                        const content = document.getElementById(targetId);
+                        
+                        if (!content.classList.contains('expanded')) {
+                            button.click();
+                        }
+                    });
+                }
+                // Alt+C 收起所有
+                if (event.altKey && event.key === 'c') {
+                    expandButtons.forEach(button => {
+                        const targetId = button.getAttribute('data-target');
+                        const content = document.getElementById(targetId);
+                        
+                        if (content.classList.contains('expanded')) {
+                            button.click();
+                        }
+                    });
+                }
+            });
+            
+            // 响应式调整
+            window.addEventListener('resize', function() {
+                console.log(`窗口大小已调整: ${window.innerWidth} x ${window.innerHeight}`);
+            });
+        });
+    </script>
+    <script src="https://player.xfyun.club/js/QQWXAntiRedness/AntiRedness.min.js"></script>
+</body>
+</html>
