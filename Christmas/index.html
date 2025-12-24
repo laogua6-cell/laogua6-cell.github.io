@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Magical Christmas Hand Control</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- MediaPipe Hands (使用 Cloudflare CDN 源 unpkg.com) -->
+    <script src="https://unpkg.com/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <!-- Howler.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <video id="input_video" style="display: none;" playsinline webkit-playsinline></video>
+    <canvas id="output_canvas"></canvas>
+
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>正在初始化魔法引擎...</p>
+        <p style="font-size: 12px; color: #aaa;">请允许摄像头权限<br>建议横屏体验最佳</p>
+    </div>
+
+    <div id="instruction-panel">
+        <h3 id="panel-header">✨ 魔法指令集 ✨ <span id="toggle-icon">▼</span></h3>
+        <ul id="instruction-list">
+            <li><span class="key-icon">✋</span> <b>张开手掌</b>: 召唤伯利恒之星</li>
+            <li><span class="key-icon">✊</span> <b>握拳</b>: 时间静止 (Time Stop)</li>
+            <li><span class="key-icon">✌️</span> <b>剪刀手</b>: 彩虹雪花模式</li>
+            <li><span class="key-icon">👌</span> <b>OK手势</b>: 播放/暂停 音乐</li>
+            <li><span class="key-icon">👍</span> <b>竖大拇指</b>: 圣诞树生长/充能</li>
+            <li><span class="key-icon">🤙</span> <b>666手势</b>: 切换主题配色</li>
+            <li><span class="key-icon">👆</span> <b>单指食指</b>: 魔法光绘/轨迹</li>
+            <li><span class="key-icon">🤟</span> <b>爱你的手势</b>: 漫天爱心雨</li>
+            <li><span class="key-icon">🕸️</span> <b>蜘蛛侠</b>: 召唤暴风雪</li>
+        </ul>
+    </div>
+
+    <div id="status-feedback">等待魔法连接...</div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
