@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>睡老瓜的刷机工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #6d8cc0;
+            --background-color: #f8f9fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --transition-speed: 0.3s;
+        }
+        
+        .dark-mode {
+            --primary-color: #6d8cc0;
+            --secondary-color: #8fa8e0;
+            --background-color: #121212;
+            --card-color: #1e1e1e;
+            --text-color: #f0f0f0;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 头部样式 */
+        header {
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            background-color: var(--card-color);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+        }
+        
+        /* 主题切换按钮 */
+        .theme-toggle {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.2rem;
+        }
+        
+        /* 描述文本 */
+        .description {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        
+        /* 大卡片列表 */
+        .large-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .large-card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: 0 8px 20px var(--shadow-color);
+            transition: all var(--transition-speed);
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .large-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px var(--shadow-color);
+        }
+        
+        .large-card h3 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .large-card p {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .card-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        /* 小卡片区域 */
+        .small-cards-container {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .small-cards-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .back-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            transition: all var(--transition-speed);
+        }
+        
+        .back-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .small-cards-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .small-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .small-card {
+            background-color: var(--card-color);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: all var(--transition-speed);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .small-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+        
+        .small-card h4 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .small-card p {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        .download-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            transition: all var(--transition-speed);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-link:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .large-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .small-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .description {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .large-card, .small-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .large-card h3 {
+                font-size: 1.4rem;
+            }
+            
+            .small-card h4 {
+                font-size: 1.2rem;
+            }
+        }
+        
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-speed);
+            z-index: 100;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <h1>老瓜的刷机工具</h1>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+                <span>切换黑白</span>
+            </button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <p class="description">
+            各种安卓设备的刷机工具、解锁工具，所有工具均经过安全检测，确保无病毒无后门。本页面只是临时写的一个红米note11tpro的刷机工具，刷机有风险，操作需谨慎。
+        </p>
+        
+        <!-- 大卡片列表 -->
+        <div class="large-cards" id="largeCards">
+            <!-- 大卡片将通过JavaScript动态生成 -->
+        </div>
+        
+        <!-- 小卡片区域 -->
+        <div class="small-cards-container" id="smallCardsContainer">
+            <button class="back-button" id="backButton">
+                <i class="fas fa-arrow-left"></i>
+                返回工具列表
+            </button>
+            <h2 class="small-cards-title" id="smallCardsTitle">工具详情</h2>
+            <div class="small-cards" id="smallCards">
+                <!-- 小卡片将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2023 老瓜的刷机工具 | 本网站仅供学习交流使用，刷机有风险，请谨慎操作</p>
+    </footer>
+    
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+    
+    <script>
+        // 大卡片数据
+        const largeCardsData = [
+            {
+                id: 1,
+                title: "小米刷机工具",
+                description: "适用于小米全系列手机的官方刷机工具，包括Mi Flash、小米解锁工具等。"
+            },
+            {
+                id: 2,
+                title: "华为刷机工具",
+                description: "华为/荣耀系列手机的刷机、解锁、降级工具合集，包括DC Phoenix、华为多工具等。"
+            },
+            {
+                id: 3,
+                title: "三星刷机工具",
+                description: "三星手机专用刷机工具Odin及其各版本，包含最新驱动和详细使用教程。"
+            },
+            {
+                id: 4,
+                title: "一加刷机工具",
+                description: "一加手机官方刷机工具、线刷包、救砖工具及全系ROM下载。"
+            },
+            {
+                id: 5,
+                title: "OPPO刷机工具",
+                description: "OPPO/Realme系列手机的深度刷机工具，包括售后工具、解锁工具等。"
+            },
+            {
+                id: 6,
+                title: "vivo刷机工具",
+                description: "vivo/iQOO手机的刷机解锁工具，包括售后维修工具、平台软件等。"
+            },
+            {
+                id: 7,
+                title: "谷歌刷机工具",
+                description: "谷歌Pixel系列手机的官方刷机工具、工厂镜像及ADB/Fastboot工具。"
+            },
+            {
+                id: 8,
+                title: "通用刷机工具",
+                description: "MTK/高通/展讯平台通用刷机工具，如SP Flash Tool、QPST、ResearchTool等。"
+            },
+            {
+                id: 9,
+                title: "解锁与救砖",
+                description: "各种手机的Bootloader解锁、账户锁移除、救砖工具及详细教程。"
+            },
+            {
+                id: 10,
+                title: "ROM与固件",
+                description: "各品牌手机官方ROM、第三方ROM、Magisk模块和TWRP恢复下载。"
+            }
+        ];
+
+        // 小卡片数据
+        const smallCardsData = {
+            1: [
+                { title: "Mi Flash Tool 2023", description: "小米官方线刷工具，支持全系列小米手机刷机", link: "http://4275.com/3savi4" },
+                { title: "小米解锁工具", description: "官方Bootloader解锁工具，支持MIUI V5以上版本", link: "http://4275.com/suxa30" },
+                { title: "小米刷机助手", description: "一键刷机工具，简化刷机流程，适合新手", link: "http://4275.com/122vd1" },
+                { title: "杂鱼面具喝ak3包", description: "老瓜:最新Android系统才可刷入", link: "http://4275.com/dpq3bs" },
+                { title: "小米测试点工具", description: "进入9008模式短接图及工具", link: "#" },
+                { title: "MIUI官方ROM", description: "各机型官方ROM下载，包含稳定版和开发版", link: "xiaomirom.com" },
+                { title: "小米TWRP恢复", description: "各机型TWRP恢复镜像下载", link: "#" },
+                { title: "小米Magisk模块", description: "小米专用Magisk模块合集", link: "http://4275.com/2bzjw0" },
+                { title: "小米分区备份", description: "小米手机分区备份还原工具", link: "#" },
+                { title: "小米刷机教程", description: "详细图文刷机教程，从入门到精通", link: "#" }
+            ],
+            2: [
+                { title: "DC Phoenix", description: "华为官方售后工具，支持刷写官方固件", link: "#" },
+                { title: "华为多工具", description: "华为多功能工具箱，解锁、刷机、修复", link: "#" },
+                { title: "Hisuite Pro", description: "华为手机助手专业版，系统修复功能", link: "#" },
+                { title: "华为测试点工具", description: "华为强制进入9008模式短接图", link: "#" },
+                { title: "华为ROM下载", description: "华为/荣耀官方固件下载", link: "#" },
+                { title: "华为解锁码计算", description: "华为Bootloader解锁码计算工具", link: "#" },
+                { title: "华为分区修复", description: "华为手机分区表修复工具", link: "#" },
+                { title: "华为TWRP恢复", description: "华为机型TWRP恢复镜像", link: "#" },
+                { title: "华为刷机教程", description: "华为手机详细刷机指南", link: "#" },
+                { title: "华为救砖工具", description: "华为手机救砖专用工具包", link: "#" }
+            ],
+            3: [
+                { title: "Odin3 v3.14", description: "三星官方刷机工具，最新稳定版本", link: "#" },
+                { title: "三星USB驱动", description: "三星手机USB驱动程序", link: "#" },
+                { title: "SamFirm", description: "三星官方固件下载工具", link: "#" },
+                { title: "Frija", description: "三星固件下载器，支持多服务器", link: "#" },
+                { title: "CSC选择工具", description: "三星CSC区域选择工具", link: "#" },
+                { title: "三星ROM下载", description: "三星各机型官方固件", link: "#" },
+                { title: "三星TWRP", description: "三星机型TWRP恢复镜像", link: "#" },
+                { title: "三星解锁工具", description: "三星Bootloader解锁工具", link: "#" },
+                { title: "三星刷机教程", description: "三星手机详细刷机指南", link: "#" },
+                { title: "三星救砖工具", description: "三星手机救砖专用工具", link: "#" }
+            ],
+            4: [
+                { title: "一加刷机工具", description: "一加官方刷机工具包", link: "#" },
+                { title: "一加ROM下载", description: "一加官方氧OS/氢OS下载", link: "#" },
+                { title: "一加解锁工具", description: "一加Bootloader解锁工具", link: "#" },
+                { title: "一加TWRP", description: "一加机型TWRP恢复", link: "#" },
+                { title: "一加9008驱动", description: "一加EDL模式驱动程序", link: "#" },
+                { title: "一加测试点", description: "一加强制9008模式短接图", link: "#" },
+                { title: "一加Magisk模块", description: "一加专用Magisk模块", link: "#" },
+                { title: "一加刷机教程", description: "一加手机详细刷机指南", link: "#" },
+                { title: "一加救砖工具", description: "一加手机救砖工具包", link: "#" },
+                { title: "一加分区备份", description: "一加手机分区备份工具", link: "#" }
+            ],
+            5: [
+                { title: "OPPO售后工具", description: "OPPO官方售后刷机工具", link: "#" },
+                { title: "Realme刷机工具", description: "Realme官方刷机工具", link: "#" },
+                { title: "深度测试工具", description: "OPPO/Realme深度测试申请工具", link: "#" },
+                { title: "OPPO解锁工具", description: "OPPO Bootloader解锁工具", link: "#" },
+                { title: "OPPO ROM下载", description: "OPPO官方固件下载", link: "#" },
+                { title: "Realme ROM下载", description: "Realme官方固件下载", link: "#" },
+                { title: "OPPO TWRP", description: "OPPO机型TWRP恢复", link: "#" },
+                { title: "OPPO刷机教程", description: "OPPO手机详细刷机指南", link: "#" },
+                { title: "OPPO救砖工具", description: "OPPO手机救砖工具", link: "#" },
+                { title: "OPPO测试点", description: "OPPO强制9008模式短接图", link: "#" }
+            ],
+            6: [
+                { title: "vivo售后工具", description: "vivo官方售后刷机平台", link: "#" },
+                { title: "iQOO刷机工具", description: "iQOO官方刷机工具", link: "#" },
+                { title: "vivo解锁工具", description: "vivo账户锁移除工具", link: "#" },
+                { title: "vivo ROM下载", description: "vivo官方固件下载", link: "#" },
+                { title: "iQOO ROM下载", description: "iQOO官方固件下载", link: "#" },
+                { title: "vivo测试点", description: "vivo强制9008模式短接图", link: "#" },
+                { title: "vivo刷机教程", description: "vivo手机详细刷机指南", link: "#" },
+                { title: "vivo救砖工具", description: "vivo手机救砖工具", link: "#" },
+                { title: "vivo分区修复", description: "vivo手机分区修复工具", link: "#" },
+                { title: "vivo驱动", description: "vivo手机USB驱动程序", link: "#" }
+            ],
+            7: [
+                { title: "Google官方工具", description: "Google官方刷机工具", link: "#" },
+                { title: "工厂镜像", description: "Pixel全系工厂镜像下载", link: "#" },
+                { title: "ADB工具包", description: "Android调试工具最新版", link: "#" },
+                { title: "Fastboot工具", description: "Fastboot命令行工具", link: "#" },
+                { title: "Google驱动", description: "Google手机USB驱动程序", link: "#" },
+                { title: "Pixel TWRP", description: "Pixel机型TWRP恢复", link: "#" },
+                { title: "Pixel ROM", description: "Pixel官方ROM下载", link: "#" },
+                { title: "Pixel解锁", description: "Pixel Bootloader解锁工具", link: "#" },
+                { title: "Pixel刷机教程", description: "Pixel手机详细刷机指南", link: "#" },
+                { title: "Pixel救砖工具", description: "Pixel手机救砖工具", link: "#" }
+            ],
+            8: [
+                { title: "SP Flash Tool", description: "MTK平台通用刷机工具", link: "#" },
+                { title: "QPST工具", description: "高通平台刷机工具", link: "#" },
+                { title: "ResearchTool", description: "展讯平台刷机工具", link: "#" },
+                { title: "MTK驱动", description: "MTK平台USB驱动程序", link: "#" },
+                { title: "高通驱动", description: "高通平台USB驱动程序", link: "#" },
+                { title: "展讯驱动", description: "展讯平台USB驱动程序", link: "#" },
+                { title: "刷机平台合集", description: "各种刷机平台工具合集", link: "#" },
+                { title: "通用TWRP", description: "通用TWRP恢复镜像", link: "#" },
+                { title: "通用刷机教程", description: "通用刷机详细指南", link: "#" },
+                { title: "通用救砖工具", description: "通用救砖工具包", link: "#" }
+            ],
+            9: [
+                { title: "Bootloader解锁", description: "各品牌Bootloader解锁教程", link: "#" },
+                { title: "账户锁移除", description: "各品牌账户锁移除工具", link: "#" },
+                { title: "救砖工具包", description: "通用救砖工具包", link: "#" },
+                { title: "分区修复", description: "手机分区修复工具", link: "#" },
+                { title: "IMEI修复", description: "手机IMEI修复工具", link: "#" },
+                { title: "基带修复", description: "手机基带修复工具", link: "#" },
+                { title: "刷机错误修复", description: "常见刷机错误修复方法", link: "#" },
+                { title: "救砖教程", description: "手机救砖详细教程", link: "#" },
+                { title: "解锁教程", description: "Bootloader解锁详细教程", link: "#" },
+                { title: "修复工具合集", description: "各种修复工具合集", link: "#" }
+            ],
+            10: [
+                { title: "官方ROM合集", description: "各品牌官方ROM下载", link: "#" },
+                { title: "第三方ROM", description: "LineageOS、PixelExperience等", link: "#" },
+                { title: "Magisk模块", description: "各种Magisk模块下载", link: "#" },
+                { title: "TWRP恢复", description: "各机型TWRP恢复下载", link: "#" },
+                { title: "GApps", description: "Google应用包下载", link: "#" },
+                { title: "Xposed框架", description: "Xposed框架及模块", link: "#" },
+                { title: "内核下载", description: "各机型自定义内核", link: "#" },
+                { title: "字体包", description: "各种字体包下载", link: "#" },
+                { title: "音效包", description: "ViPER4Android等音效包", link: "#" },
+                { title: "ROM制作工具", description: "ROM制作和修改工具", link: "#" }
+            ]
+        };
+
+        // DOM元素
+        const largeCardsContainer = document.getElementById('largeCards');
+        const smallCardsContainer = document.getElementById('smallCardsContainer');
+        const smallCardsTitle = document.getElementById('smallCardsTitle');
+        const smallCardsContainerInner = document.getElementById('smallCards');
+        const backButton = document.getElementById('backButton');
+        const themeToggle = document.getElementById('themeToggle');
+        const backToTop = document.getElementById('backToTop');
+
+        // 初始化大卡片
+        function initLargeCards() {
+            largeCardsData.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'large-card';
+                cardElement.dataset.id = card.id;
+                
+                cardElement.innerHTML = `
+                    <div class="card-number">${card.id}</div>
+                    <h3>${card.title}</h3>
+                    <p>${card.description}</p>
+                    <div class="download-link">查看工具列表</div>
+                `;
+                
+                cardElement.addEventListener('click', () => showSmallCards(card.id, card.title));
+                largeCardsContainer.appendChild(cardElement);
+            });
+        }
+
+        // 显示小卡片
+        function showSmallCards(cardId, cardTitle) {
+            // 隐藏大卡片
+            largeCardsContainer.style.display = 'none';
+            
+            // 设置小卡片区域标题
+            smallCardsTitle.textContent = cardTitle;
+            
+            // 清空小卡片容器
+            smallCardsContainerInner.innerHTML = '';
+            
+            // 获取对应的小卡片数据
+            const cards = smallCardsData[cardId];
+            
+            // 生成小卡片
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'small-card';
+                
+                cardElement.innerHTML = `
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                    <a href="${card.link}" class="download-link">下载工具</a>
+                `;
+                
+                smallCardsContainerInner.appendChild(cardElement);
+            });
+            
+            // 显示小卡片区域
+            smallCardsContainer.classList.add('active');
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 返回大卡片列表
+        function backToLargeCards() {
+            // 显示大卡片
+            largeCardsContainer.style.display = 'grid';
+            
+            // 隐藏小卡片区域
+            smallCardsContainer.classList.remove('active');
+            
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 切换暗色/亮色模式
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            
+            // 更新按钮文本和图标
+            const icon = themeToggle.querySelector('i');
+            const text = themeToggle.querySelector('span');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun';
+                text.textContent = '切换亮色';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = '切换黑白';
+            }
+            
+            // 保存主题偏好到localStorage
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+        }
+
+        // 检查保存的主题偏好
+        function checkSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                
+                // 更新按钮文本和图标
+                const icon = themeToggle.querySelector('i');
+                const text = themeToggle.querySelector('span');
+                icon.className = 'fas fa-sun';
+                text.textContent = '切换亮色';
+            }
+        }
+
+        // 显示/隐藏返回顶部按钮
+        function toggleBackToTop() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        }
+
+        // 返回顶部
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 初始化
+        function init() {
+            initLargeCards();
+            checkSavedTheme();
+            
+            // 事件监听
+            backButton.addEventListener('click', backToLargeCards);
+            themeToggle.addEventListener('click', toggleTheme);
+            window.addEventListener('scroll', toggleBackToTop);
+            backToTop.addEventListener('click', scrollToTop);
+            
+            // 初始检查是否显示返回顶部按钮
+            toggleBackToTop();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <script src="https://player.xfyun.club/js/QQWXAntiRedness/AntiRedness.min.js"></script>
+</body>
+</html>
