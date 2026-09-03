@@ -248,11 +248,11 @@
   <script>
     // 5条一言
     const quoteList = [
-      "道阻且长，行则将至。",
-      "保持热爱，奔赴山海。",
-      "慢慢来，好戏都在烟火里。",
-      "凡心所向，素履以往。",
-      "星光不问赶路人。"
+      "随机一言1：道阻且长，行则将至。",
+      "随机一言2：保持热爱，奔赴山海。",
+      "随机一言3：慢慢来，好戏都在烟火里。",
+      "随机一言4：凡心所向，素履以往。",
+      "随机一言5：星光不问赶路人。"
     ];
     let index = 0;
     const quoteDom = document.getElementById('quote');
@@ -279,17 +279,18 @@
       themeBtn.innerText = isDark ? "切换浅色" : "切换深色";
     })
   </script>
-  <script src="https://player.xfyun.club/js/music-player/music-player.min.js"></script>
-
+<script src="https://player.xfyun.club/js/music-player/plugin/ie-out/index.js"></script>
+<script src="https://player.xfyun.club/js/music-player/music-player.min.js"></script>
+<script src="https://player.xfyun.club/js/music-player/plugin/sakura/sakura.min.js"></script>
 <xf-music-player
-  language="zh"
-  theme="xf-original-theme"
+  theme="xf-wine-theme"
+  is-auto-playlist="true"
+  colorful-lyric="true"
+  audio-visualizer="true"
   mode="cloud"
-  api-url="https://music.api.xfyun.club/api/v1/music/top?platform=qq&topId=26"
-  environment="production"
-  remember-playback="true"
-  play-mode="order"
-  volume="0.8"
-/>
+  api-url="https://music.api.xfyun.club/api/v1/music/top?platform=netease&topId=3778678"
+>
+</xf-music-player>
+<!-- playlist 与 audioProvider 等复杂配置请使用 JavaScript、Vue 或 React 引入方式。 -->
 </body>
 </html>
