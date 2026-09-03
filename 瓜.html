@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>老瓜 · 资源导航</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #222222;
+      --card-bg: #f7f8fa;
+      --border: #e5e7eb;
+      --btn-bg: #333;
+      --btn-text: #fff;
+    }
+
+    .dark {
+      --bg: #18181b;
+      --text: #e4e4e7;
+      --card-bg: #27272a;
+      --border: #3f3f46;
+      --btn-bg: #efefef;
+      --btn-text: #111;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      transition: background 0.3s, color 0.3s;
+      padding: 16px;
+    }
+
+    /* 头部区域 移动端自适应 */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto 30px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      gap:12px;
+    }
+
+    /* 头部左侧：头像 + 竖向文字 */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap:8px;
+      flex-shrink: 0;
+    }
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border:2px solid var(--border);
+    }
+    .vertical-text {
+      writing-mode: vertical-rl;
+      font-size:16px;
+      letter-spacing:3px;
+    }
+
+    /* 中间一言区域 */
+    .quote-wrap {
+      flex:1;
+      max-width:420px;
+      text-align:center;
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 8px;
+    }
+    .quote-text {
+      font-size:15px;
+      line-height:1.6;
+      transition: opacity 0.4s;
+    }
+
+    /* 右侧主题按钮 */
+    .theme-btn {
+      padding:7px 14px;
+      border-radius:8px;
+      border:none;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      cursor:pointer;
+      font-size:13px;
+      transition: 0.3s;
+      flex-shrink:0;
+    }
+    .theme-btn:hover {
+      opacity:0.85;
+    }
+
+    /* 主导航容器，面板4:3 */
+    .container {
+      max-width:1200px;
+      aspect-ratio: 4 / 3;
+      margin:0 auto;
+      background: var(--card-bg);
+      border-radius:16px;
+      padding:24px;
+      border:1px solid var(--border);
+      overflow:auto;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+      gap:16px;
+    }
+
+    .nav-card {
+      background: var(--bg);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:18px 10px;
+      text-align:center;
+      cursor:pointer;
+      transition: 0.25s;
+    }
+    .nav-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+    }
+    .nav-card a {
+      text-decoration:none;
+      color: inherit;
+      display:block;
+    }
+    .nav-card .icon {
+      font-size:26px;
+      margin-bottom:6px;
+    }
+    .nav-card .title {
+      font-size:14px;
+    }
+
+    /* 移动端媒体查询 */
+    @media (max-width: 768px) {
+      header {
+        flex-wrap: wrap;
+      }
+      .quote-wrap {
+        order:3;
+        width:100%;
+        max-width:100%;
+        margin-top:10px;
+      }
+      .avatar {
+        width:44px;
+        height:44px;
+      }
+      .vertical-text {
+        font-size:14px;
+      }
+      .container {
+        padding:16px;
+        border-radius:12px;
+      }
+      .nav-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px,1fr));
+        gap:12px;
+      }
+      .nav-card {
+        padding:14px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img class="avatar" src="img/瓜.png" alt="头像">
+      <div class="vertical-text">老瓜</div>
+    </div>
+
+    <div class="quote-wrap">
+      <div class="quote-text" id="quote"></div>
+    </div>
+
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+  </header>
+
+  <div class="container">
+    <div class="nav-grid">
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">📚</div>
+          <div class="title">学习工具</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">🔧</div>
+          <div class="title">开发工具</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">🎨</div>
+          <div class="title">设计资源</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">📦</div>
+          <div class="title">网盘资源</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">🌐</div>
+          <div class="title">实用网站</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">🎵</div>
+          <div class="title">影音娱乐</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">📝</div>
+          <div class="title">笔记文档</div>
+        </a>
+      </div>
+      <div class="nav-card">
+        <a href="https://www.baidu.com" target="_blank">
+          <div class="icon">🔍</div>
+          <div class="title">搜索聚合</div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 5条一言
+    const quoteList = [
+      "随机一言1：道阻且长，行则将至。",
+      "随机一言2：保持热爱，奔赴山海。",
+      "随机一言3：慢慢来，好戏都在烟火里。",
+      "随机一言4：凡心所向，素履以往。",
+      "随机一言5：星光不问赶路人。"
+    ];
+    let index = 0;
+    const quoteDom = document.getElementById('quote');
+
+    // 初始化第一条
+    quoteDom.innerText = quoteList[index];
+
+    // 3秒自动切换
+    setInterval(()=>{
+      index = (index + 1) % quoteList.length;
+      quoteDom.style.opacity = 0;
+      setTimeout(()=>{
+        quoteDom.innerText = quoteList[index];
+        quoteDom.style.opacity = 1;
+      },200)
+    },3000)
+
+    // 主题切换
+    const themeBtn = document.getElementById('themeBtn');
+    let isDark = false;
+    themeBtn.addEventListener('click',()=>{
+      isDark = !isDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      themeBtn.innerText = isDark ? "切换浅色" : "切换深色";
+    })
+  </script>
+</body>
+</html>
