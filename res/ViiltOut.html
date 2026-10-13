@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viilt out — OPPO/一加/真我 inte 内核检测失效模块</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;}
+body{
+  background:linear-gradient(180deg,#ffd6d6,#fff3e6);
+  min-height:100vh;
+  padding:14px;
+  color:#2c2c2c;
+  position:relative;
+  overflow-x:hidden;
+}
+@media (prefers-reduced-motion: reduce){
+  #petal-container{display:none !important;}
+}
+#petal-container{
+  position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;
+}
+.petal{
+  position:absolute;background:#ffc8d0;border-radius:50% 0 50% 50%;opacity:0.7;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:0.8;}
+  100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
+}
+.container{
+  max-width:900px;margin:0 auto;position:relative;z-index:1;
+}
+.card{
+  background:rgba(255,255,255,0.75);
+  border:1px solid #f7b8c4;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+}
+h1{
+  display:flex;align-items:center;gap:10px;font-size:24px;margin-bottom:10px;color:#c95b6e;
+}
+.sakura::before{
+  content:"🌸";
+}
+.meta{color:#666;font-size:14px;margin-bottom:14px;}
+.warning{background:#fff1f1;border-left:4px solid #e65c5c;padding:12px;border-radius:10px;margin-bottom:16px;}
+h2{font-size:18px;margin:20px 0 8px;color:#b84f62;}
+h3{font-size:16px;margin:14px 0 6px;color:#a34556;}
+p{line-height:1.5;margin-bottom:8px;}
+ul,ol{padding-left:20px;margin-bottom:10px;line-height:1.5;}
+hr{border:0;border-top:1px solid #f2c8d0;margin:18px 0;}
+.collapse-btn{
+  background:#fff;border:1px solid #f2b4c0;color:#b84f62;padding:10px 14px;border-radius:12px;cursor:pointer;font-size:15px;margin:4px 0;text-align:left;width:100%;
+}
+.collapse-content{
+  overflow:hidden;
+  max-height:0px;
+  transition: max-height 0.3s ease;
+}
+.code{
+  background:#fcf0f2;padding:10px;border-radius:10px;font-family:monospace;font-size:13px;white-space:pre-wrap;overflow-x:auto;margin:8px 0;
+}
+.download-wrap{
+  text-align:center;margin-top:8px;
+}
+.download-btn{
+  display:inline-block;
+  background:#e8788e;
+  color:#ffffff;
+  text-decoration:none;
+  font-weight:500;
+  padding:12px 32px;
+  border-radius:14px;
+  font-size:16px;
+  transition:background 0.2s;
+}
+.download-btn:hover{
+  background:#d4647a;
+}
+</style>
+</head>
+<body>
+<div id="petal-container"></div>
+<div class="container">
+<div class="card">
+<h1 class="sakura">Viilt out</h1>
+<div class="meta">作者：梵依｜KernelSU / Magisk 模块</div>
+<div class="warning">
+<strong>⚠️ 重要风险提醒</strong><br>
+本模块属于内核级Root修改工具。修改内核、绕过系统完整性检测，违反手机系统及绝大多数游戏/APP用户协议，可能导致账号封禁、设备风控、卡开机、数据丢失；修改TEE安全环境会破坏设备原生安全机制。仅作技术研究，不推荐安装使用，使用后果自行承担。
+</div>
+<p><strong>Viilt out —— 让 OPPO / 一加 / 真我 的 inte 内核检测模块失效</strong></p>
+<p>一个 KernelSU / Magisk 模块。作者 梵依。</p>
+<p><strong>写在前面：</strong>这个模块需要 Root（KernelSU 或 Magisk），不 Root 用不了。<br>下面把原理、边界、实测数据都摊开讲，包括它做不到什么。</p>
+</div>
+
+<div class="card">
+<button class="collapse-btn">一~九｜完整文档 ▾</button>
+<div class="collapse-content">
+<h2>一、inte 是什么</h2>
+<p>OPPO 系（ColorOS / realme UI / 一加）从某个版本起在系统里带了一个内核模块，模块名 inte，部分机型上以 inte.ko 的形式落在 /vendor/lib/modules/ 下面。</p>
+<p>它做的是内核完整性检测。具体行为：</p>
+<ul>
+<li>往 /proc 下注册检测节点</li>
+<li>遍历内核符号表，核对关键函数有没有被改</li>
+<li>检查自己的模块文件与内存镜像是否一致</li>
+<li>把结果上报给系统里的检测服务</li>
+</ul>
+<p>对普通用户来说它基本无感。对装了内核级模块的人来说，它就是那个 "为什么游戏/应用判定我设备异常"的来源之一。</p>
+<p>viilt out 做的事只有一件：让 inte 失去效果。</p>
+
+<h2>二、它是怎么失效的（三层，任意一层生效即可）</h2>
+<h3>第一层：开机自动卸载</h3>
+<p>守护进程在开机后立刻 rmmod inte，并且每 5 秒（可调 3 到 60 秒）复核一次 /proc/modules。只要 inte 又出现，立刻再卸掉。<br>监控模式下只观察、不卸载，用来诊断。</p>
+
+<h3>第二层：文件遮蔽（可选，默认关闭）</h3>
+<p>用 tmpfs 覆盖内核模块目录，让 inte.ko 连文件都查不到 —— 不是删除，是"这个路径下从来没有过这个文件"。</p>
+<p>关于读取手段的说明：ls 类工具读目录会触发 getdents，而 stat 单文件走 lstat，两者路径不同。所以遮蔽做的是目录级覆盖，而不是靠改名或改权限糊弄过去。这一点实测验证过。</p>
+<p>代价必须说清楚：它会改变挂载表。Hunter 一类工具会因此报 "黑灰产设备，已被 Hook & 修改"。两者无法共存，只能选一个。</p>
+
+<h3>第三层：游戏缓存守护（独立功能，默认关闭）</h3>
+<p>游戏运行时清理三类东西：</p>
+<ul>
+<li>陈旧缓存：Cache / ShaderCache / AssetBundleCache / Crashpad</li>
+<li>孤儿临时文件：.tmp / .part / .download / .crdownload</li>
+<li>过期日志：超过保留天数（默认 7 天）</li>
+</ul>
+<p>这里要说一个反直觉的点：删反作弊 SDK 的落地文件并不会让游戏更流畅。删了它们 SDK 会重建，重建过程本身要走一遍检测流程，CPU 和 I/O 都白花，结果更卡。所以这一层清的是真正影响流畅度的陈旧缓存，不是检测文件。</p>
+<p><strong>两道保险：</strong></p>
+<ul>
+<li>年龄校验。只清"至少 10 分钟没被改动过"的文件。正在写的缓存块会被跳过 —— 缓存被游戏读取时也会刷新 mtime，所以这个判据是可靠的。</li>
+<li>白名单语义。必须命中清理模式才删，名字不匹配一律不动。早先的写法是"不在保护名单里就删"，那迟早误删。</li>
+</ul>
+<p>保护名单覆盖：存档、资源包（obb/pak/bundle）、加密归档、可执行文件（so/dex/vdex/oat）、数据库、配置、shared_prefs 与 lib 目录。keep 的优先级高于 kill，这是刻意设计。</p>
+
+<h2>三、Key 状态监测与一键修复</h2>
+<p>这一块跟 inte 无关，是另一个常见问题的处置流程。</p>
+<p>监测五项：KeyMint 版本、TEE 环境、Attestation 状态、相关模块是否就位、烧录环境是否可用。</p>
+<p><strong>一键修复按顺序做四件事：</strong></p>
+<ol>
+<li>刷入 TEE-AutoList</li>
+<li>刷入 TEESimulator-RS（注意：它的模块 ID 是 tricky_store，会替换掉设备上已有的 Tricky Store）</li>
+<li>仅 OPPO 系设备刷入"修复Key状态"</li>
+<li>烧录密钥修复 TEE（依赖 Termux）</li>
+</ol>
+<p>过程不可中断。第 4 步依赖 Termux，它是个自解压程序，没装 Termux 时该步会跳过并记录原因。</p>
+<p>关于第 4 步的诚实说明：它的烧录脚本是只读性质的（读 IMEI / 序列号，只往 /data/local/tmp 写一个文件），随后会因为编译进去的 UBSan 溢出检查主动 abort。而且它用的 keybox 与已公开泄露的根证书同源，无法通过 Play Integrity。想通过的话需要用 TEESimulator-RS 那套。</p>
+
+<h2>四、界面</h2>
+<p>WebUI 在 KernelSU 管理器里点模块卡片的按钮打开。</p>
+<p>当前版本是樱花主题：底是暖粉到奶油的渐变，卡片是半透明白加粉调描边，强调色用珊瑚粉。标题前有一枚自绘的樱花图案，另外有五片花瓣持续飘落。在 prefers-reduced-motion 下花瓣层会整体隐藏。</p>
+<p>界面里能看到：</p>
+<ul>
+<li>首屏状态（inte 是否加载、检测节点数、守护进程 PID 与运行时长）</li>
+<li>运行指标六项</li>
+<li>控制台：工作模式、守护频率、立即清除</li>
+<li>开关与防护：文件遮蔽、游戏缓存守护、模块自检更新</li>
+<li>Key 状态与一键修复</li>
+<li>设备与环境（机型、Root 管理器、内核版本、命中目标）</li>
+<li>运行日志与诊断面板</li>
+</ul>
+<p>设计上做了几件事：默认折叠说明文字（页面高度从 2894px 压到约 2200px）、状态按钮语义化配色（关是白底描边、开是绿底、试跑中是黄调）、所有可点元素高度不低于 48px。</p>
+
+<h2>五、兼容性</h2>
+<p>主要针对 OPPO 系：ColorOS、realme UI、一加。</p>
+<p>判据是 ro.product.brand / ro.product.manufacturer 里出现 OnePlus / OPPO / realme，或者 ro.build.version.oplusrom / ro.oplus.version 非空。命中其一即认为是 OPPO 系。</p>
+<p>非 OPPO 系设备上模块不会强行做事：卸载层找不到 inte 就什么都不做，Key 修复的第 3 步会跳过。</p>
+<p>实测机型：一加 OPPO 真我新机型适配</p>
+
+<h2>六、实现上的一些细节</h2>
+<p><strong>守护进程与 WebUI 之间只走一行协议</strong><br>
+KernelSU 的 WebUI 桥（window.ksu.exec）只返回 stdout 的最后一行。所以 bin/webstatus.sh 把 38 个字段用竖线拼成一行输出，前端自己切分。踩过这个坑：多行输出只会拿到最后一行，字段全丢。</p>
+<p><strong>Android 的 sh 是 32 位有符号整数</strong><br>
+授权到期时间如果直接存 unix 秒，在 2038 年会溢出。所以存的是"天数 + 激活时刻"，比较用天数序数。</p>
+<p><strong>权限加固</strong><br>
+模块目录 700、脚本 700、module.prop 600、共享记录 600。webroot 必须 755 / 644 —— 这条踩过坑：WebView 不以 root 身份读取 webroot，权限过紧会直接黑屏（当时误判成"WebUI 挂了"，实际是权限问题）。</p>
+<p><strong>Termux APK 有 SHA256 白名单</strong><br>
+因为它会被 pm install 以 root 身份安装。原来的校验只读前两字节判断是不是 ZIP 魔数 —— 也就是说只要文件开头是 PK 就会被装上。现在校验大小、ZIP 魔数、以及 SHA256 白名单，而且拿不到 sha256sum 时直接拒绝安装。</p>
+<p><strong>模块自检</strong><br>
+仓库里带了自检脚本，覆盖变量先用后赋值、协议字段数一致性、发货包完整性（含体积上限）、游戏守护判定逻辑等。发货包有 16MB 体积硬闸门 —— 服务器上传上限比想象中低，超了会导致刷入包 404 但更新清单已更新的尴尬状态，用户更新直接失败。</p>
+
+<h2>七、已知边界与不做的事</h2>
+<ol>
+<li><strong>模块不可能"完全隐身"</strong><br>卸载 inte 会让 /proc/modules 少一项，这是客观事实。模块做的事是让它失效，不是让它看起来还在。</li>
+<li><strong>本地授权记录挡不住有 Root 的人</strong><br>设备上不保存原始口令（有意设计），所以守护进程算不出服务端的 HMAC，无法复算校验。已经有 Root 的人可以改写记录延长授权。这不是提权漏洞，而是"签名没被用满"的产品取舍。</li>
+<li><strong>文件遮蔽与 Hunter 冲突</strong><br>前面说过，二选一。</li>
+<li><strong>改名混淆的路子走不通</strong><br>试过用字符串表混淆压缩脚本体积，结果索引错位，'未连接' 变成了 '桥接不可用'。放弃了。CSS 加密也试过，直接导致 WebUI 黑屏。现在脚本是明文的。</li>
+<li><strong>不碰游戏本体</strong><br>游戏资源、加密归档、存档一律不删。删了要重下几个 GB，只会更慢。</li>
+</ol>
+
+<h2>八、安装</h2>
+<ol>
+<li>KernelSU / Magisk 里刷入 zip</li>
+<li>重启</li>
+<li>在管理器的模块页面打开 WebUI</li>
+<li>首次使用需要验证</li>
+</ol>
+<p><strong>卸载：</strong>管理器里直接卸载模块即可，卸载脚本会把守护进程停掉、把 tmpfs 遮蔽还原、清理共享目录里的残留。</p>
+
+<h2>九、最后</h2>
+<p>这个模块解决的问题很窄：OPPO 系那一个内核检测模块。</p>
+<p>它不解决 Root 检测、不解决 Play Integrity、不解决其他厂商的检测。把预期放对位置比较重要。</p>
+<p>项目从最初一个几十行的 shell 脚本，长到现在十个脚本加一个完整 WebUI，中间踩过的坑基本都写进了代码注释里 —— 为什么这么写、为什么不那么写、哪个写法实测会出问题。有兴趣可以直接读脚本，注释比脚本本身长。</p>
+</div>
+</div>
+
+<div class="card download-wrap">
+<a class="download-btn" href="https://1852601028.share.123pan.cn/123pan/lEJwvd-YNnnv" target="_blank">📥 下载 Viilt out 模块</a>
+</div>
+
+</div>
+
+<script>
+// 花瓣飘落
+const container = document.getElementById('petal-container');
+function createPetal(){
+  const p = document.createElement('div');
+  p.className = 'petal';
+  const size = 6 + Math.random()*10;
+  p.style.width = size+'px';
+  p.style.height = size+'px';
+  p.style.left = Math.random()*100+'%';
+  p.style.animationDuration = 4 + Math.random()*6 +'s';
+  container.appendChild(p);
+  setTimeout(()=>p.remove(), 10000);
+}
+setInterval(createPetal, 600);
+
+// 折叠面板
+document.querySelectorAll('.collapse-btn').forEach(btn=>{
+  const content = btn.nextElementSibling;
+  btn.onclick = ()=>{
+    if(content.style.maxHeight === '0px'){
+      content.style.maxHeight = content.scrollHeight + 'px';
+      btn.textContent = btn.textContent.replace('▾','▴');
+    }else{
+      content.style.maxHeight = '0px';
+      btn.textContent = btn.textContent.replace('▴','▾');
+    }
+  }
+})
+</script>
+</body>
+</html>
