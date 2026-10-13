@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>隐藏环境</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;}
+:root {
+  --bg: #ffffff;
+  --text: #222222;
+  --card-bg: #f7f8fa;
+  --border: #e5e7eb;
+  --btn-bg: #333;
+  --btn-text: #fff;
+}
+.dark {
+  --bg: #18181b;
+  --text: #e4e4e7;
+  --card-bg: #27272a;
+  --border: #3f3f46;
+  --btn-bg: #efefef;
+  --btn-text: #111;
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  padding:16px;
+  transition: background 0.3s,color 0.3s;
+}
+.container{
+  max-width:720px;
+  margin:0 auto;
+}
+.back-btn{
+  display:inline-block;
+  text-decoration:none;
+  color:var(--text);
+  margin-bottom:20px;
+}
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+}
+h1{font-size:22px;margin-bottom:12px;}
+.desc{line-height:1.6;margin:12px 0;font-size:15px;opacity:0.9;}
+.warning{
+  background:#fff2f2;
+  border-left:4px solid #dd4444;
+  padding:12px;border-radius:8px;margin:16px 0;
+}
+.dark .warning{
+  background:#382424;
+}
+.link-wrap{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.a-link{
+  display:inline-block;
+  padding:11px 20px;
+  background:var(--btn-bg);
+  color:var(--btn-text);
+  border-radius:10px;
+  text-decoration:none;
+}
+.item-block{
+  margin:16px 0;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.item-block h3{
+  margin-bottom:8px;
+  font-size:16px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<a class="back-btn" href="../index.html">← 返回导航首页</a>
+<div class="card">
+<h1>🕵️ 隐藏环境</h1>
+<div class="warning">
+<strong>风险警告</strong><br>
+隐藏Root、规避系统/应用检测，可能造成APP账号封禁、支付功能异常，仅供个人技术研究，使用后果自行承担。
+<br>下方为第三方外部站点，本站不对外部网站内容做任何担保。
+</div>
+
+<div class="item-block">
+<h3>🌐 yhyun.asia（月虹大佬官方网址）</h3>
+<p class="desc">
+内容包含隐藏环境，游戏助手，提权等等。
+<br>隐藏环境：免解，临时，完整root等都可一键隐藏环境，只需面具输入就行。
+</p>
+<div class="link-wrap">
+<a class="a-link" href="https://yhyun.asia" target="_blank">访问 yhyun.asia</a>
+</div>
+</div>
+
+<div class="item-block">
+<h3>🌐 xiaocaiye.cn</h3>
+<p class="desc">
+功能与 yhyun.asia 保持一致，包含隐藏环境。
+</p>
+<div class="link-wrap">
+<a class="a-link" href="https://xiaocaiye.cn" target="_blank">访问 xiaocaiye.cn</a>
+</div>
+</div>
+
+</div>
+</div>
+</body>
+</html>
