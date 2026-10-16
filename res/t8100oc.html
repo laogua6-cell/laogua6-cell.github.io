@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天玑8100 单大核超频教程</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif}
+body{background:#f7f8fa;color:#222;padding:16px;transition:0.3s}
+.dark{background:#121212;color:#eee}
+.container{max-width:720px;margin:0 auto}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px #00000012}
+.dark .card{background:#1e1e1e}
+.warn{background:#fff2f2;border:1px solid #ff4444;color:#c00;padding:12px;border-radius:10px;margin-bottom:16px;font-weight:500}
+summary{font-size:18px;font-weight:bold;cursor:pointer;padding:8px}
+details{margin:8px 0;border:1px solid #ddd;border-radius:10px;background:#fafafa}
+.dark details{border-color:#333;background:#272727}
+details[open]{padding-bottom:10px}
+.content{padding:0 14px 8px 14px;line-height:1.6}
+.btn-wrap{margin-top:24px;text-align:center}
+a.btn{display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:bold}
+a.back{background:#666;margin-right:10px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="warn">⚠️ 超频有风险！无单核性能瓶颈不要使用，小白禁止尝试，乱改参数导致死机重启后果自负</div>
+
+<div class="card">
+<h2>天玑8100 单大核超频教程（解决单核瓶颈）</h2>
+<p style="margin:8px 0;color:#666">脚本来自 @shadow3，感谢大佬分享</p>
+</div>
+
+<details open>
+<summary>适用场景说明</summary>
+<div class="content">
+<p>拿王者举例，主线程太吃单核性能，一旦性能不够，占满CPU，就会发生掉帧，适当超频+线程优化可以解决这个瓶颈。</p>
+</div>
+</details>
+
+<details>
+<summary>方案介绍</summary>
+<div class="content">
+<ul style="padding-left:20px;">
+<li>仅超大核超频到3.05Ghz，小核、三颗中核不超频，防止空载功耗过高，适合日用</li>
+<li>加压参数已经调试完成，自用稳定。<strong>不要乱动配置内参数！</strong></li>
+<li>脚本<strong>只能手动启动，禁止模块自启</strong>，体质差芯片会陷入反复重启循环</li>
+<li>超频后需要把游戏主线程绑定到大核，发挥性能收益</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>实测效果</summary>
+<div class="content">
+<p><strong>功耗：</strong>只超单个大核，静态功耗基本在1瓦以内，日常功耗和原版差距不大，仅高负载时功耗上升。</p>
+<p><strong>性能：</strong>大核综合性能提升约14%。原本主线程跑满99%，提升后不再撞上限，缓解游戏掉帧。</p>
+</div>
+</details>
+
+<details>
+<summary>适配机型</summary>
+<div class="content">
+<p>#天玑8100# #一加Ace竞速版# #红米Note11TPro#</p>
+</div>
+</details>
+
+<details>
+<summary>最终免责提醒</summary>
+<div class="content">
+<p>超频有风险，我不会教你调节配置参数。看不懂参数作用就不要修改。芯片体质差出现死机重启，请立刻停止使用。不适合小白。</p>
+</div>
+</details>
+
+<div class="btn-wrap">
+<a class="btn back" href="../gua.html">返回首页</a>
+<a class="btn" href="https://1852601028.share.123pan.cn/123pan/lEJwvd-YNnnv">脚本下载链接</a>
+</div>
+</div>
+<script>
+// 深色模式简单检测
+if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+document.body.classList.add('dark');
+}
+</script>
+</body>
+</html>
