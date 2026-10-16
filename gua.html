@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>老瓜 · 资源导航</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --bg: #ffffff;
+      --text: #222222;
+      --card-bg: #f7f8fa;
+      --border: #e5e7eb;
+      --btn-bg: #333;
+      --btn-text: #fff;
+      --tab-active:#2563eb;
+      --tab-inactive:#9ca3af;
+    }
+    .dark {
+      --bg: #18181b;
+      --text: #e4e4e7;
+      --card-bg: #27272a;
+      --border: #3f3f46;
+      --btn-bg: #efefef;
+      --btn-text: #111;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      transition: background 0.3s, color 0.3s;
+      padding: 16px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border);
+    }
+    .vertical-text {
+      writing-mode: vertical-rl;
+      font-size: 16px;
+      letter-spacing: 3px;
+    }
+    .quote-wrap {
+      flex: 1;
+      max-width: 420px;
+      text-align: center;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 8px;
+    }
+    .quote-text {
+      font-size: 15px;
+      line-height: 1.6;
+      transition: opacity 0.4s;
+    }
+    .theme-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: none;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      cursor: pointer;
+      font-size: 13px;
+      transition: 0.3s;
+      flex-shrink: 0;
+    }
+    .theme-btn:hover {
+      opacity: 0.85;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    /* tab切换 */
+    .tab-wrap{
+      display:flex;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .tab-btn{
+      border:none;
+      background:none;
+      font-size:16px;
+      font-weight:600;
+      color:var(--tab-inactive);
+      cursor:pointer;
+      padding:8px 12px;
+      border-bottom:2px solid transparent;
+      transition:0.2s;
+    }
+    .tab-btn.active{
+      color:var(--tab-active);
+      border-bottom-color:var(--tab-active);
+    }
+    .tab-btn:hover{opacity:0.8;}
+
+    .group{
+      display:none;
+    }
+    .group.show{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .group-items{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .collapse-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .collapse-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 16px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+    }
+    .collapse-btn .left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .collapse-btn .icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .collapse-btn .title {
+      font-weight: 600;
+    }
+    .collapse-btn .arrow {
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .collapse-item.open .collapse-btn .arrow {
+      transform: rotate(180deg);
+    }
+    .collapse-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .collapse-inner {
+      padding: 0 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .collapse-desc {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text);
+      opacity: 0.85;
+    }
+    pre.code-block{
+      background-color: var(--bg);
+      border:1px solid var(--border);
+      border-radius:8px;
+      padding:12px;
+      font-size:13px;
+      overflow-x:auto;
+      white-space:pre-wrap;
+      line-height:1.7;
+    }
+    .jump-btn {
+      align-self: flex-start;
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .jump-btn:hover {
+      opacity: 0.85;
+    }
+    @media (max-width: 768px) {
+      header {
+        flex-wrap: wrap;
+      }
+      .quote-wrap {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 10px;
+      }
+      .avatar {
+        width: 44px;
+        height: 44px;
+      }
+      .vertical-text {
+        font-size: 14px;
+      }
+      .collapse-btn {
+        padding: 14px 16px;
+        font-size: 15px;
+      }
+      .collapse-inner {
+        padding: 0 16px 14px;
+      }
+      .tab-btn{
+        font-size:14px;
+        padding:6px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <img class="avatar" src="img/瓜.png" alt="头像">
+      <div class="vertical-text">老瓜</div>
+    </div>
+    <div class="quote-wrap">
+      <div class="quote-text" id="quote"></div>
+    </div>
+    <button class="theme-btn" id="themeBtn">切换深色</button>
+  </header>
+  <div class="container">
+    <!-- Tab切换按钮 -->
+    <div class="tab-wrap">
+      <button class="tab-btn active" data-target="group-local">📂 本地资源（跳转 res 页面）</button>
+      <button class="tab-btn" data-target="group-outer">🌐 外部链接 / 页内直接查看</button>
+    </div>
+
+    <!--第一组：本地res文件夹跳转资源-->
+    <div id="group-local" class="group show">
+      <div class="group-items">
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">📚</span>
+              <span class="title">Vivo高刷</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                OriginOS 全应用强制高刷模块，解除vivo系统应用60Hz锁，保留厂商帧率封顶，LTPO闲置降帧不受影响。
+              </p>
+              <a class="jump-btn" href="res/VivoHfrAlwaysOn.html">前往模块页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🔧</span>
+              <span class="title">欧加耳机增强</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                ColorOS LSPosed模块，让第三方西伯利亚耳机模拟OPPO官方耳机，支持原生蓝牙弹窗、音频胶囊与系统控制面板。
+              </p>
+              <a class="jump-btn" href="res/MelodyPlus_ng.html">前往模块页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🎨</span>
+              <span class="title">Viilt out</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                Viilt out LSPosed模块，用于vivo/OriginOS系统相关增强功能，点击进入详情页查看说明与下载。
+              </p>
+              <a class="jump-btn" href="res/ViiltOut.html">前往模块页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🔓</span>
+              <span class="title">临时root（别人网盘更新）</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                GhostLock‑月虹提权助手，免解BL锁相关工具资源，网盘由他人维护自动更新。
+                <br>⚠️存在变砖、丢失数据、失去保修风险，仅作个人技术研究。
+              </p>
+              <a class="jump-btn" href="res/ghostlock.html">前往资源页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🕵️</span>
+              <span class="title">隐藏环境</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                Root环境隐藏相关工具合集，包含内核隐藏、应用检测规避、Play Integrity相关资源。
+                <br>⚠️用于绕过应用风控有账号封禁风险，仅供技术学习研究。
+              </p>
+              <a class="jump-btn" href="res/hideenv.html">前往资源页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">⚡</span>
+              <span class="title">降压超频</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                T8100芯片降压超频相关配置与工具，调节芯片电压频率，提升性能或降低功耗。
+                <br>⚠️错误参数可能造成死机、硬件损坏，仅供技术研究。
+              </p>
+              <a class="jump-btn" href="res/t8100oc.html">前往资源页面</a>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🚀</span>
+              <span class="title">系统优化</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                安卓系统优化脚本、模块、调教方案，改善续航、流畅度、后台留存。
+                <br>⚠️错误配置可能导致系统异常，建议备份后使用，仅供技术研究。
+              </p>
+              <a class="jump-btn" href="res/system_tweak.html">前往资源页面</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--第二组：外部链接 / 当前页面直接展示内容-->
+    <div id="group-outer" class="group">
+      <div class="group-items">
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">📞</span>
+              <span class="title">小米拨号工程代码</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                小米/红米拨号盘隐藏工程代码，调出5G、VoNR、VoLTE、VoWiFi、频段、工程模式等隐藏选项。
+                <br>⚠️不同机型、系统版本兼容性存在差异，乱改网络参数可能导致无信号，仅供技术查阅。
+              </p>
+<pre class="code-block">
+*#*#54638#*#*   开启设置里的5G开关
+*#*#794824#*#*  5GN28
+*#*#616633#*#*  开启N1频段
+*#*#65686633#*#*开启N5和N8频段
+*#*#932428#*#*  微信语音和电话共存
+*#06#           移动识别码 IMEI号
+*#*#8667#*#*    开启VoNR选项
+*#*#86583#*#*   开启VoLTE选项
+*#*#869434#*#*  开启VoWiFi选项
+*#*#726633#*#*  开启5G网络模式选择 / SA开关
+*#*#4636#*#*    手机信息锁网（查看手机信号强弱）
+*#*#6484#*#*    cit工程模式
+</pre>
+            </div>
+          </div>
+        </div>
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">🔓</span>
+              <span class="title">小米官方BL解锁工具</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                小米官方Bootloader解锁页面，需要绑定小米账号申请解锁权限，电脑端下载解锁工具。
+                <br>⚠️解锁后设备安全性下降，查找手机、指纹安全相关功能可靠性降低，会清空全部数据、影响保修，普通用户不建议解锁。
+              </p>
+              <a class="jump-btn" href="https://www.miui.com/unlock/index.html" target="_blank">打开官方解锁网页(新标签)</a>
+            </div>
+          </div>
+        </div>
+        <!--新增 XiaomiROM刷机包下载-->
+        <div class="collapse-item">
+          <button class="collapse-btn">
+            <span class="left">
+              <span class="icon">📥</span>
+              <span class="title">XiaomiROM 刷机包下载</span>
+            </span>
+            <span class="arrow">▾</span>
+          </button>
+          <div class="collapse-body">
+            <div class="collapse-inner">
+              <p class="collapse-desc">
+                小米/红米全机型MIUI、澎湃OS卡刷&线刷包聚合站点，包含国行、国际各版本历史固件。
+                <br>⚠️刷机有风险，务必确认机型与版本，刷机前务必备份全部数据。
+              </p>
+              <a class="jump-btn" href="https://xiaomirom.com" target="_blank">打开XiaomiROM(新标签)</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const quoteList = [
+      "随机一言1：道阻且长，行则将至。",
+      "随机一言2：保持热爱，奔赴山海。",
+      "随机一言3：慢慢来，好戏都在烟火里。",
+      "随机一言4：凡心所向，素履以往。",
+      "随机一言5：星光不问赶路人。"
+    ];
+    let index = 0;
+    const quoteDom = document.getElementById('quote');
+    quoteDom.innerText = quoteList[index];
+    setInterval(() => {
+      index = (index + 1) % quoteList.length;
+      quoteDom.style.opacity = 0;
+      setTimeout(() => {
+        quoteDom.innerText = quoteList[index];
+        quoteDom.style.opacity = 1;
+      }, 200);
+    }, 3000);
+
+    //深色切换
+    const themeBtn = document.getElementById('themeBtn');
+    let isDark = false;
+    themeBtn.addEventListener('click', () => {
+      isDark = !isDark;
+      document.documentElement.classList.toggle('dark', isDark);
+      themeBtn.innerText = isDark ? "切换浅色" : "切换深色";
+    });
+
+    //手风琴折叠
+    document.querySelectorAll('.collapse-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.parentElement;
+        const body = btn.nextElementSibling;
+        document.querySelectorAll('.collapse-item').forEach(other => {
+          if (other !== item) {
+            other.classList.remove('open');
+            other.querySelector('.collapse-body').style.maxHeight = '0px';
+          }
+        });
+        if (item.classList.contains('open')) {
+          item.classList.remove('open');
+          body.style.maxHeight = '0px';
+        } else {
+          item.classList.add('open');
+          body.style.maxHeight = body.scrollHeight + 'px';
+        }
+      });
+    });
+
+    //Tab分组切换逻辑
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const groups = document.querySelectorAll('.group');
+    tabBtns.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        //切换tab激活状态
+        tabBtns.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const targetId = btn.dataset.target;
+        //关闭所有已经展开的折叠面板
+        document.querySelectorAll('.collapse-item.open').forEach(coll=>{
+          coll.classList.remove('open');
+          coll.querySelector('.collapse-body').style.maxHeight='0px';
+        });
+        //只显示目标分组
+        groups.forEach(g=>g.classList.remove('show'));
+        document.getElementById(targetId).classList.add('show');
+      })
+    })
+  </script>
+  <script src="https://player.xfyun.club/js/music-player/plugin/ie-out/index.js"></script>
+  <script src="https://player.xfyun.club/js/music-player/music-player.min.js"></script>
+  <script src="https://player.xfyun.club/js/music-player/plugin/sakura/sakura.min.js"></script>
+  <xf-music-player
+    theme="xf-wine-theme"
+    is-auto-playlist="true"
+    colorful-lyric="true"
+    audio-visualizer="true"
+    mode="cloud"
+    api-url="https://music.api.xfyun.club/api/v1/music/top?platform=netease&topId=3778678"
+  >
+  </xf-music-player>
+</body>
+</html>
