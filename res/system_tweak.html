@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统优化 | 红米Note11TPro系列</title>
+<style>
+:root {
+    --bg: #ffffff;
+    --text: #222;
+    --card-bg: #f7f8fa;
+    --border: #e5e7eb;
+    --warn: #dc2626;
+}
+.dark {
+    --bg: #18181b;
+    --text: #e4e4e7;
+    --card-bg: #27272a;
+    --border: #3f3f46;
+    --warn: #f87171;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:system-ui,-apple-system,sans-serif;
+    padding:20px 16px;
+    max-width:860px;
+    margin:0 auto;
+    line-height:1.75;
+}
+.back{
+    display:inline-block;
+    padding:8px 14px;
+    background:#333;
+    color:#fff;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+    margin-bottom:20px;
+}
+.dark .back{background:#eee;color:#111;}
+h1{font-size:22px;margin-bottom:6px;}
+.sub{opacity:0.75;font-size:14px;margin-bottom:24px;}
+.card{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:16px;
+}
+h2{font-size:17px;margin-bottom:10px;}
+.warn{color:var(--warn);font-weight:500;}
+pre{
+    background:var(--bg);
+    border:1px solid var(--border);
+    padding:12px;
+    border-radius:8px;
+    overflow-x:auto;
+    font-size:14px;
+    margin:10px 0;
+}
+a.dl{
+    display:inline-block;
+    padding:10px 18px;
+    background:#2563eb;
+    color:#fff;
+    text-decoration:none;
+    border-radius:10px;
+    margin-top:8px;
+}
+</style>
+</head>
+<body>
+<a class="back" href="../gua.html">← 返回导航首页</a>
+
+<h1>红米Note11TPro / Note11TPro+ 系统优化</h1>
+<div class="sub">天玑8100｜MIUI14 / 澎湃OS ｜代码搬运合并，仅供技术研究</div>
+
+<div class="card">
+<h2>一、系统优化模块（多位大佬代码合并）</h2>
+<p>适配红米Note11TPro系列小米系统，整合多位作者优化代码。</p>
+<ul>
+<li><strong>熵池优化</strong>：降低系统频繁唤醒，提升待机续航，实测效果明显。</li>
+<li>提供<strong>CPU频率限制版</strong>、<strong>无CPU频率限制版</strong>两个版本：
+<pre>限制版频率配置：
+小核最低：850mhz
+中核最低：1000mhz
+大核最低：900mhz
+开机约1分钟生效，天玑8100该档位不会额外增加功耗。</pre>
+</li>
+<li>兼容：自测 MIUI14 完全可用；理论兼容澎湃OS。本人仅为代码搬运工。</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>二、天玑降压模块版本选择建议</h2>
+<p>嘟嘟天玑降压模块2.0.1：开机一周左右降压会自动失效，可查看 <code>proc/emm</code>确认状态。</p>
+<p>推荐使用<strong>天玑降压1.0版本</strong>，但1.0版本不会设置生效频率，降压触发运行低频时容易卡死宕机。</p>
+<p class="warn">小白方案：刷上面【带CPU频率限制】的优化模块 + 天玑降压1.0；
+依旧宕机代表降压幅度设置过大，请降低降压参数。</p>
+</div>
+
+<div class="card">
+<h2>三、碎片整理（脏块整理）</h2>
+<p>非Magisk模块，需要MT管理器ROOT权限执行脚本。收集整合大佬脚本。</p>
+</div>
+
+<div class="card">
+<h2>四、强制激发最大亮度脚本</h2>
+<p>找不到旧的自动拉高亮度模块，自行编写脚本。</p>
+<p>非模块，MT管理器ROOT运行。</p>
+<p>恢复正常亮度：手动滑动亮度滑块；开启自动亮度也会覆盖该效果。适合手动亮度用户。</p>
+</div>
+
+<div class="card">
+<p class="warn">⚠️风险提示：全部为玩家修改脚本/模块，有死机、重启、系统异常风险，请务必备份数据再使用。感谢各位开源大佬，本人仅为代码搬运。</p>
+<a class="dl" href="https://1852601028.share.123pan.cn/123pan/lEJwvd-YNnnv">[链接]查看下载链接</a>
+</div>
+
+</body>
+</html>
